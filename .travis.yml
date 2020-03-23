@@ -6,6 +6,7 @@ android:
   - android-26
   - extra-google-google_play_services
 before_install:
+- yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28"
 - openssl aes-256-cbc -K $encrypted_fd8d34b142d0_key -iv $encrypted_fd8d34b142d0_iv
   -in google-services.json.enc -out app/google-services.json -d
 env:
