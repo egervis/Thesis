@@ -52,13 +52,13 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //Testing
-//        Choice choice1 = new Choice(1,"a",true);
-//        Choice choice2 = new Choice(2,"b",false);
+//        Choice choice1 = new Choice(1,"c",true);
+//        Choice choice2 = new Choice(2,"d",false);
 //        ArrayList<Choice> lst = new ArrayList<>();
 //        lst.add(choice1);
 //        lst.add(choice2);
 //        QuizService service = new QuizService();
-//        service.createQuestion("q1", 1, "temp", "temp", false, lst,
+//        service.createQuestion("q2", 1, "temp", "temp", false, lst,
 //                new OnSuccessListener<Question>() {
 //                    @Override
 //                    public void onSuccess(Question question) {
@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 //            @Override
 //            public void onSuccess(ArrayList<Question> questions) {
 //
-//                service.createQuiz("quiz1", "none", "temp", "temp", questions,
+//                service.createQuiz("quiz2", "none", "temp", "temp", questions,
 //                        new OnSuccessListener<Quiz>() {
 //                            @Override
 //                            public void onSuccess(Quiz quiz) {
@@ -101,6 +101,20 @@ public class LoginActivity extends AppCompatActivity {
 //            @Override
 //            public void onSuccess(Quiz quiz) {
 //                System.out.println(quiz.getQuestions().get(0).getChoices().get(0).getChoiceText());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        QuizService service = new QuizService();
+//        service.getQuizzes("temp", new OnSuccessListener<ArrayList<Quiz>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Quiz> quizzes) {
+//                System.out.println(quizzes.get(1).getQuestions().get(0).getChoices().get(0).getChoiceText());
+//                System.out.println(quizzes.get(0).getName());
 //            }
 //        }, new OnFailureListener() {
 //            @Override
