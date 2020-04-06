@@ -1,5 +1,6 @@
 package com.example.quiz.Controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,17 +12,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.quiz.Model.Choice;
+import com.example.quiz.Model.Question;
+import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.User;
 import com.example.quiz.R;
+import com.example.quiz.Service.QuizService;
 import com.example.quiz.Service.UserService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText firstNameInput;
     private EditText lastNameInput;
     private EditText emailInput;
+
+    //Temp vars
+    private EditText idInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +44,78 @@ public class LoginActivity extends AppCompatActivity {
         lastNameInput = findViewById(R.id.lastNameInput);
         emailInput = findViewById(R.id.emailInput);
 
-        Button exportAttendance = findViewById(R.id.signUpButton);
-        exportAttendance.setOnClickListener(new View.OnClickListener() {
+        Button signUp = findViewById(R.id.signUpButton);
+        signUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 signUp();
+            }
+        });
+
+        //Testing
+//        Choice choice1 = new Choice(1,"a",true);
+//        Choice choice2 = new Choice(2,"b",false);
+//        ArrayList<Choice> lst = new ArrayList<>();
+//        lst.add(choice1);
+//        lst.add(choice2);
+//        QuizService service = new QuizService();
+//        service.createQuestion("q1", 1, "temp", "temp", false, lst,
+//                new OnSuccessListener<Question>() {
+//                    @Override
+//                    public void onSuccess(Question question) {
+//
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//        final QuizService service = new QuizService();
+//        service.getQuestions("temp", new OnSuccessListener<ArrayList<Question>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Question> questions) {
+//
+//                service.createQuiz("quiz1", "none", "temp", "temp", questions,
+//                        new OnSuccessListener<Quiz>() {
+//                            @Override
+//                            public void onSuccess(Quiz quiz) {
+//                                System.out.println(quiz.getQuestions().get(0).getChoices().get(1).getChoiceText());
+//                            }
+//                        }, new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//
+//                            }
+//                        });
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+
+        QuizService service = new QuizService();
+        service.getQuiz("kB4qjHJw2bsE14RYhJKD", new OnSuccessListener<Quiz>() {
+            @Override
+            public void onSuccess(Quiz quiz) {
+                System.out.println(quiz.getQuestions().get(0).getChoices().get(0).getChoiceText());
+            }
+        }, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        //Temp code
+        idInput = findViewById(R.id.idInput);
+        Button signIn = findViewById(R.id.signUpButton);
+        signIn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RoleSelectActivity.class);
+                intent.putExtra("id", idInput.getText().toString());
             }
         });
     }
