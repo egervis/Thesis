@@ -95,27 +95,29 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
-        QuizService service = new QuizService();
-        service.getQuiz("kB4qjHJw2bsE14RYhJKD", new OnSuccessListener<Quiz>() {
-            @Override
-            public void onSuccess(Quiz quiz) {
-                System.out.println(quiz.getQuestions().get(0).getChoices().get(0).getChoiceText());
-            }
-        }, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
+//
+//        QuizService service = new QuizService();
+//        service.getQuiz("kB4qjHJw2bsE14RYhJKD", new OnSuccessListener<Quiz>() {
+//            @Override
+//            public void onSuccess(Quiz quiz) {
+//                System.out.println(quiz.getQuestions().get(0).getChoices().get(0).getChoiceText());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
 
         //Temp code
         idInput = findViewById(R.id.idInput);
-        Button signIn = findViewById(R.id.signUpButton);
+        Button signIn = findViewById(R.id.signInButton);
         signIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RoleSelectActivity.class);
                 intent.putExtra("id", idInput.getText().toString());
+                startActivity(intent);
+                finish();
             }
         });
     }

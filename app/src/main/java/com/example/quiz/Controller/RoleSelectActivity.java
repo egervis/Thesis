@@ -26,6 +26,7 @@ public class RoleSelectActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(RoleSelectActivity.this, TeacherClassList.class);
                 intent.putExtra("id", getIntent().getStringExtra("id"));
+                startActivity(intent);
             }
         });
 
@@ -34,6 +35,8 @@ public class RoleSelectActivity extends AppCompatActivity {
 //            public void onClick(View v) {
 //                Intent intent = new Intent(RoleSelectActivity.this, RoleSelectActivity.class);
 //                intent.putExtra("id", getIntent().getStringExtra("id"));
+//                startActivity(intent);
+//                finish();
 //            }
 //        });
     }
