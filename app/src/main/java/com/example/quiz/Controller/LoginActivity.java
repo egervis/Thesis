@@ -12,16 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.quiz.Model.Choice;
-import com.example.quiz.Model.Question;
-import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.User;
 import com.example.quiz.R;
-import com.example.quiz.Service.QuizService;
+
 import com.example.quiz.Service.UserService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+//Testing imports
+import com.example.quiz.Model.Choice;
+import com.example.quiz.Model.Question;
+import com.example.quiz.Model.Quiz;
+import com.example.quiz.Service.QuizService;
 import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {

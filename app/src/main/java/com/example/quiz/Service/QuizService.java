@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.example.quiz.Model.Choice;
 import com.example.quiz.Model.Question;
 import com.example.quiz.Model.Quiz;
+import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.StudentChoice;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -18,6 +20,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +60,29 @@ public class QuizService {
                     snapshot.getDouble("choiceNum").intValue(),
                     snapshot.getString("choiceText"),
                     snapshot.getBoolean("isCorrect"));
+        }
+    };
+
+    public final SnapshotParser<QuizSession> SNAPSHOTPARSER_QUIZ_SESSION = new SnapshotParser<QuizSession>() {
+        @NonNull
+        @Override
+        public QuizSession parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+            return new QuizSession(snapshot.getId(),
+                    snapshot.getString("classId"),
+                    snapshot.getString("quizId"),
+                    snapshot.getDate("startTime"),
+                    snapshot.getDate("endTime"));
+        }
+    };
+
+    public final SnapshotParser<StudentChoice> SNAPSHOTPARSER_STUDENT_CHOICE = new SnapshotParser<StudentChoice>() {
+        @NonNull
+        @Override
+        public StudentChoice parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+            return new StudentChoice(snapshot.getString("studentId"),
+                    snapshot.getString("quizSessionId"),
+                    snapshot.getString("questionId"),
+                    snapshot.getDouble("choiceNum").intValue());
         }
     };
 
@@ -397,6 +423,163 @@ public class QuizService {
                                 }).addOnFailureListener(onFailureListener);
                     }
                 }).addOnFailureListener(onFailureListener);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    //---------------------Needs Testing-----------------------------------------------------------------------------
+
+    public void createQuizSession(final String classId, final String quizId, final Date startTime, final Date endTime,
+                                  final OnSuccessListener<QuizSession> onSuccessListener,
+                                  final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        Map<String, Object> quizMap = new HashMap<>();
+        quizMap.put("classId", classId);
+        quizMap.put("quizId", quizId);
+        quizMap.put("startTime", startTime);
+        quizMap.put("endTime", endTime);
+
+        db.collection("quiz_session").add(quizMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                QuizSession quizSession = new QuizSession(documentReference.getId(), classId, quizId, startTime, endTime);
+                onSuccessListener.onSuccess(quizSession);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void getQuizSession(final String quizSessionId,
+                                  final OnSuccessListener<QuizSession> onSuccessListener,
+                                  final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("quiz_session").document(quizSessionId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                QuizSession quizSession = SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(documentSnapshot);
+                onSuccessListener.onSuccess(quizSession);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void getStudentQuizSessions(final String studentId,
+                               final OnSuccessListener<ArrayList<QuizSession>> onSuccessListener,
+                               final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("quiz_session_student").whereEqualTo("studentId", studentId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                final ArrayList<String> qIds = new ArrayList<>();
+                final ArrayList<String> grades = new ArrayList<>();
+                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                {
+                    qIds.add(docSnap.getString("quizSessionId"));
+                    grades.add(docSnap.getString("grade"));
+                }
+                db.collection("quiz_session").whereIn(FieldPath.documentId(), qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<QuizSession> quizSessions = new ArrayList<>();
+                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+                        {
+                            String id = snap.getId();
+                            QuizSession quizSession = SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(snap);
+                            quizSession.setGrade(Double.parseDouble(grades.get(qIds.indexOf(id))));
+                            quizSessions.add(quizSession);
+                        }
+                        onSuccessListener.onSuccess(quizSessions);
+                    }
+                }).addOnFailureListener(onFailureListener);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void recordStudentChoices(final String studentId, final String quizSessionId, final double grade, final ArrayList<StudentChoice> studentChoices,
+                                     final OnSuccessListener<Void> onSuccessListener,
+                                     final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        WriteBatch batch = db.batch();
+
+        DocumentReference quizSessionStudent = db.collection("quiz_session_student").document();
+        Map<String, Object> quizSessionStudentMap = new HashMap<>();
+        quizSessionStudentMap.put("studentId", studentId);
+        quizSessionStudentMap.put("quizSessionId", quizSessionId);
+        quizSessionStudentMap.put("grade", grade);
+        batch.set(quizSessionStudent, quizSessionStudentMap);
+
+        for(StudentChoice c: studentChoices)
+        {
+            DocumentReference studentChoice = db.collection("student_choice").document();
+            Map<String, Object> map = new HashMap<>();
+            map.put("studentId", c.getStudentId());
+            map.put("quizSessionId", c.getQuizSessionId());
+            map.put("questionId", c.getQuestionId());
+            map.put("choiceNum", c.getChoiceNum());
+            batch.set(studentChoice, map);
+        }
+
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                onSuccessListener.onSuccess(aVoid);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void getStudentChoices(final String studentId, final String quizSessionId,
+                                  final OnSuccessListener<ArrayList<StudentChoice>> onSuccessListener,
+                                  final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("student_choice").whereEqualTo("studentId", studentId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                ArrayList<StudentChoice> lst = new ArrayList<>(0);
+                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                {
+                    if(docSnap.get("quizSessionId").equals(quizSessionId))
+                    {
+                        lst.add(SNAPSHOTPARSER_STUDENT_CHOICE.parseSnapshot(docSnap));
+                    }
+                }
+                onSuccessListener.onSuccess(lst);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void getStudentChoice(final String studentId, final String quizSessionId, final String questionId,
+                                  final OnSuccessListener<StudentChoice> onSuccessListener,
+                                  final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("student_choice").whereEqualTo("studentId", studentId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                StudentChoice studentChoice = null;
+                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                {
+                    if(docSnap.get("quizSessionId").equals(quizSessionId) && docSnap.get("questionId").equals(questionId))
+                    {
+                        studentChoice = SNAPSHOTPARSER_STUDENT_CHOICE.parseSnapshot(docSnap);
+                    }
+                }
+                onSuccessListener.onSuccess(studentChoice);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void administerQuiz(final String classId, final String quizSessionId,
+                               final OnSuccessListener<Void> onSuccessListener,
+                               final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("class").document(classId).update("lastQuizSessionId", quizSessionId).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                onSuccessListener.onSuccess(aVoid);
             }
         }).addOnFailureListener(onFailureListener);
     }
