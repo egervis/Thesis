@@ -326,6 +326,44 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
+//
+//        final QuizService quizService = new QuizService();
+//        quizService.getQuestions("temp", new OnSuccessListener<ArrayList<Question>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Question> questions) {
+//                quizService.createQuiz("guiz3", "none", "temp", "temp", questions, new OnSuccessListener<Quiz>() {
+//                    @Override
+//                    public void onSuccess(Quiz quiz) {
+//                        System.out.println(quiz.getName());
+//                        System.out.println(quiz.getQuestions());
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        QuizService quizService = new QuizService();
+//        quizService.getQuizzes("temp", new OnSuccessListener<ArrayList<Quiz>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Quiz> quizzes) {
+//                System.out.println(quizzes.get(0).getName());
+//                System.out.println(quizzes.get(0).getQuestions());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
 
         //Temp code
         idInput = findViewById(R.id.idInput);
