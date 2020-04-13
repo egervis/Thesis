@@ -170,7 +170,7 @@ public class QuizService {
             }
         }).addOnFailureListener(onFailureListener);
     }
-
+    //TODO: change to return without choices
     /**
      * Gets a list of questions based on the provided user id of the creator
      * @param createdBy the user id of the creator of the questions
@@ -335,7 +335,7 @@ public class QuizService {
             }
         }).addOnFailureListener(onFailureListener);
     }
-
+    //TODO: change to quiz without questions
     /**
      * Gets a list of quizzes based on the provided user id of the creator
      * @param createdBy the user id of the creator of the quizzes
@@ -427,8 +427,6 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
-    //---------------------Needs Testing-----------------------------------------------------------------------------
-
     public void createQuizSession(final String classId, final String quizId, final Date startTime, final Date endTime,
                                   final OnSuccessListener<QuizSession> onSuccessListener,
                                   final OnFailureListener onFailureListener) {
@@ -443,8 +441,18 @@ public class QuizService {
         db.collection("quiz_session").add(quizMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                QuizSession quizSession = new QuizSession(documentReference.getId(), classId, quizId, startTime, endTime);
-                onSuccessListener.onSuccess(quizSession);
+                final QuizSession quizSession = new QuizSession(documentReference.getId(), classId, quizId, startTime, endTime);
+                administerQuiz(classId, documentReference.getId(), new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        onSuccessListener.onSuccess(quizSession);
+                    }
+                }, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        onFailureListener.onFailure(e);
+                    }
+                });
             }
         }).addOnFailureListener(onFailureListener);
     }
@@ -476,7 +484,7 @@ public class QuizService {
                 for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
                 {
                     qIds.add(docSnap.getString("quizSessionId"));
-                    grades.add(docSnap.getString("grade"));
+                    grades.add(docSnap.getDouble("grade")+"");
                 }
                 db.collection("quiz_session").whereIn(FieldPath.documentId(), qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

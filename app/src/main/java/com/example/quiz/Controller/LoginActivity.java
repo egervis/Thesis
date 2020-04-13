@@ -12,9 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.quiz.Model.Classroom;
+import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.StudentChoice;
 import com.example.quiz.Model.User;
 import com.example.quiz.R;
 
+import com.example.quiz.Service.ClassService;
 import com.example.quiz.Service.UserService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +29,8 @@ import com.example.quiz.Model.Question;
 import com.example.quiz.Model.Quiz;
 import com.example.quiz.Service.QuizService;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -53,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Testing
+//        Testing
 //        Choice choice1 = new Choice(1,"c",true);
 //        Choice choice2 = new Choice(2,"d",false);
 //        ArrayList<Choice> lst = new ArrayList<>();
@@ -117,6 +123,202 @@ public class LoginActivity extends AppCompatActivity {
 //            public void onSuccess(ArrayList<Quiz> quizzes) {
 //                System.out.println(quizzes.get(1).getQuestions().get(0).getChoices().get(0).getChoiceText());
 //                System.out.println(quizzes.get(0).getName());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        UserService userService = new UserService();
+//        ArrayList<String> uIds = new ArrayList<>();
+//        uIds.add("qfrZy6uEHLO150Ixi6F3");
+//        uIds.add("QPcWHJCcnI9HSSHckdR2");
+//        userService.getUsers(uIds, new OnSuccessListener<ArrayList<User>>() {
+//            @Override
+//            public void onSuccess(ArrayList<User> users) {
+//                System.out.println(users.get(0).getFirstName());
+//                System.out.println(users.get(1).getFirstName());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        ClassService classService = new ClassService();
+//        long currentTime = System.currentTimeMillis();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(currentTime);
+//        Date start = calendar.getTime();
+//        calendar.add(Calendar.MONTH, 3);
+//        final Date end = calendar.getTime();
+//        classService.createClass("class2", "1", start, end, "qfrZy6uEHLO150Ixi6F3",
+//                new OnSuccessListener<Classroom>() {
+//                    @Override
+//                    public void onSuccess(Classroom classroom) {
+//                        System.out.println(end);
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//        ClassService classService = new ClassService();
+//        classService.addUserToClass("tmE0EUHgwjICvq0Qubl6", "QPcWHJCcnI9HSSHckdR2", "student",
+//                new OnSuccessListener<String>() {
+//                    @Override
+//                    public void onSuccess(String s) {
+//
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//        classService.addUserToClass("tmE0EUHgwjICvq0Qubl6", "XRDCGWl1CPUTJZ8aAWMm", "student",
+//                new OnSuccessListener<String>() {
+//                    @Override
+//                    public void onSuccess(String s) {
+//
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//        ClassService classService = new ClassService();
+//        classService.getClassWithUsers("Qc2BeOW6tqJ6gSIhdrPO", new OnSuccessListener<Classroom>() {
+//            @Override
+//            public void onSuccess(Classroom classroom) {
+//                System.out.println(classroom.getStudents().get(0).getFirstName());
+//                System.out.println(classroom.getStudents().get(1).getFirstName());
+//                System.out.println(classroom.getTeachers().get(0).getFirstName());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        ClassService classService = new ClassService();
+//        classService.getClassesWithoutUsers("QPcWHJCcnI9HSSHckdR2", new OnSuccessListener<ArrayList<Classroom>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Classroom> classrooms) {
+//                System.out.println(classrooms.get(0).getName());
+//                System.out.println(classrooms.get(1).getName());
+//                System.out.println(classrooms.get(0).getStudents());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        QuizService quizService = new QuizService();
+//        long currentTime = System.currentTimeMillis();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(currentTime);
+//        Date start = calendar.getTime();
+//        calendar.add(Calendar.MINUTE, 30);
+//        final Date end = calendar.getTime();
+//        quizService.createQuizSession("Qc2BeOW6tqJ6gSIhdrPO", "6yzf3xAMMw2PUBT2eDjT", start, end,
+//                new OnSuccessListener<QuizSession>() {
+//                    @Override
+//                    public void onSuccess(QuizSession quizSession) {
+//                        System.out.println(quizSession.getEndTime());
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//        QuizService quizService = new QuizService();
+//        quizService.getQuizSession("x8O2At9qMDtxEjPrgkJV", new OnSuccessListener<QuizSession>() {
+//            @Override
+//            public void onSuccess(QuizSession quizSession) {
+//                System.out.println(quizSession.getEndTime());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        StudentChoice studentChoice = new StudentChoice("QPcWHJCcnI9HSSHckdR2", "zVqKOJb2IkU4GLuDuYYF", "lFBRXkyXVLxYandfL5Mg", 1);
+//        ArrayList<StudentChoice> lst = new ArrayList<>();
+//        lst.add(studentChoice);
+//        QuizService quizService = new QuizService();
+//        quizService.recordStudentChoices("QPcWHJCcnI9HSSHckdR2", "zVqKOJb2IkU4GLuDuYYF", 100, lst, new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        QuizService quizService = new QuizService();
+//        quizService.getStudentQuizSessions("QPcWHJCcnI9HSSHckdR2", new OnSuccessListener<ArrayList<QuizSession>>() {
+//            @Override
+//            public void onSuccess(ArrayList<QuizSession> quizSessions) {
+//                System.out.println(quizSessions.get(0).getGrade());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        final QuizService quizService = new QuizService();
+//        quizService.getQuestion("lFBRXkyXVLxYandfL5Mg", new OnSuccessListener<Question>() {
+//            @Override
+//            public void onSuccess(final Question question) {
+//                quizService.getStudentChoice("QPcWHJCcnI9HSSHckdR2", "zVqKOJb2IkU4GLuDuYYF", "lFBRXkyXVLxYandfL5Mg", new OnSuccessListener<StudentChoice>() {
+//                    @Override
+//                    public void onSuccess(StudentChoice studentChoice) {
+//                        try {
+//                            System.out.println(studentChoice.isCorrect(question.getChoices()));
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        QuizService quizService = new QuizService();
+//        quizService.getStudentChoices("QPcWHJCcnI9HSSHckdR2", "zVqKOJb2IkU4GLuDuYYF", new OnSuccessListener<ArrayList<StudentChoice>>() {
+//            @Override
+//            public void onSuccess(ArrayList<StudentChoice> studentChoices) {
+//                System.out.println(studentChoices.get(0).getChoiceNum());
 //            }
 //        }, new OnFailureListener() {
 //            @Override
