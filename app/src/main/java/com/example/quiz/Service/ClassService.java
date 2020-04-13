@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClassService {
+    /** Gets a database instance*/
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /** Parses a class retrieved from the database into a classroom object*/
     public final SnapshotParser<Classroom> SNAPSHOTPARSER_CLASS = new SnapshotParser<Classroom>() {
         @NonNull
         @Override
@@ -35,6 +37,16 @@ public class ClassService {
         }
     };
 
+    /**
+     * Creates a class with the provided information
+     * @param name the name of the class
+     * @param sectionNumber the section number of the class
+     * @param startDate the start date of the class
+     * @param endDate the end date of the class
+     * @param teacherId the creator/teacher of the class
+     * @param onSuccessListener the callback if successful. Returns the class (classroom) that was created.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void createClass(final String name, final String sectionNumber, final Date startDate, final Date endDate,
                            final String teacherId,
                            final OnSuccessListener<Classroom> onSuccessListener,
@@ -80,6 +92,14 @@ public class ClassService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Adds a user to a class with the provided information
+     * @param classId the id of the class
+     * @param userId the id of the user
+     * @param role the role of the user (teacher,student)
+     * @param onSuccessListener the callback if successful. Returns the id of the user class entry that was created.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void addUserToClass(final String classId, final String userId, final String role,
                                final OnSuccessListener<String> onSuccessListener,
                                final OnFailureListener onFailureListener) {
@@ -97,7 +117,13 @@ public class ClassService {
         }).addOnFailureListener(onFailureListener);
     }
 
-    public void  getClassWithUsers(final String classId,
+    /**
+     * Gets a class WITH (teachers and students are set) all its users based on the provided class id
+     * @param classId the id of the class
+     * @param onSuccessListener the callback if successful. Returns the class (classroom) that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void  getClass(final String classId,
                                    final OnSuccessListener<Classroom> onSuccessListener,
                                    final OnFailureListener onFailureListener) {
         //TODO: blank checks
@@ -154,7 +180,13 @@ public class ClassService {
         }).addOnFailureListener(onFailureListener);
     }
 
-    public void  getClassesWithoutUsers(final String userId,
+    /**
+     * Gets a list of classes WITHOUT (teachers and students are null) its users based on the provided user id
+     * @param userId the user id
+     * @param onSuccessListener the callback if successful. Returns the list of classes (classrooms) that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void  getClasses(final String userId,
                                    final OnSuccessListener<ArrayList<Classroom>> onSuccessListener,
                                    final OnFailureListener onFailureListener) {
         //TODO: blank checks

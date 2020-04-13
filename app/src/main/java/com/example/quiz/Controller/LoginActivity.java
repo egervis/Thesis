@@ -12,13 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.quiz.Model.Classroom;
-import com.example.quiz.Model.QuizSession;
-import com.example.quiz.Model.StudentChoice;
 import com.example.quiz.Model.User;
 import com.example.quiz.R;
 
-import com.example.quiz.Service.ClassService;
 import com.example.quiz.Service.UserService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,7 +23,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.example.quiz.Model.Choice;
 import com.example.quiz.Model.Question;
 import com.example.quiz.Model.Quiz;
+import com.example.quiz.Model.Classroom;
+import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.StudentChoice;
 import com.example.quiz.Service.QuizService;
+import com.example.quiz.Service.ClassService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,7 +59,61 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        Testing
+        //Testing
+        tempTesting();
+
+        //Temp code
+        idInput = findViewById(R.id.idInput);
+        Button signIn = findViewById(R.id.signInButton);
+        signIn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RoleSelectActivity.class);
+                intent.putExtra("id", idInput.getText().toString());
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    private void signUp()
+    {
+        boolean valid = true;
+        String first = firstNameInput.getText().toString();
+        String last = lastNameInput.getText().toString();
+        String email = emailInput.getText().toString();
+        if(first.equals(""))
+            valid = false;
+        if(last.equals(""))
+            valid = false;
+        if(email.equals(""))
+            valid = false;
+        if(valid)
+        {
+            UserService userService = new UserService();
+            userService.createUser(first, last, email, new OnSuccessListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Hello "+user.getFirstName(), Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Failed to create new user", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
+        }
+        else
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), "Invalid Inputs", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    //used for manual testing until firebase is fully set up and input/blank checks are in place
+    public void tempTesting()
+    {
 //        Choice choice1 = new Choice(1,"c",true);
 //        Choice choice2 = new Choice(2,"d",false);
 //        ArrayList<Choice> lst = new ArrayList<>();
@@ -364,53 +418,5 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
-        //Temp code
-        idInput = findViewById(R.id.idInput);
-        Button signIn = findViewById(R.id.signInButton);
-        signIn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RoleSelectActivity.class);
-                intent.putExtra("id", idInput.getText().toString());
-                startActivity(intent);
-                finish();
-            }
-        });
-    }
-
-    private void signUp()
-    {
-        boolean valid = true;
-        String first = firstNameInput.getText().toString();
-        String last = lastNameInput.getText().toString();
-        String email = emailInput.getText().toString();
-        if(first.equals(""))
-            valid = false;
-        if(last.equals(""))
-            valid = false;
-        if(email.equals(""))
-            valid = false;
-        if(valid)
-        {
-            UserService userService = new UserService();
-            userService.createUser(first, last, email, new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Hello "+user.getFirstName(), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Failed to create new user", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            });
-        }
-        else
-        {
-            Toast toast = Toast.makeText(getApplicationContext(), "Invalid Inputs", Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 }

@@ -27,6 +27,7 @@ import java.util.Map;
 public class QuizService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /** Parses a quiz retrieved from the database into a quiz object*/
     public final SnapshotParser<Quiz> SNAPSHOTPARSER_QUIZ = new SnapshotParser<Quiz>() {
         @NonNull
         @Override
@@ -39,6 +40,7 @@ public class QuizService {
         }
     };
 
+    /** Parses a question retrieved from the database into a question object*/
     public final SnapshotParser<Question> SNAPSHOTPARSER_QUESTION = new SnapshotParser<Question>() {
         @NonNull
         @Override
@@ -52,6 +54,7 @@ public class QuizService {
         }
     };
 
+    /** Parses a choice retrieved from the database into a choice object*/
     public final SnapshotParser<Choice> SNAPSHOTPARSER_CHOICE = new SnapshotParser<Choice>() {
         @NonNull
         @Override
@@ -63,6 +66,7 @@ public class QuizService {
         }
     };
 
+    /** Parses a quiz session retrieved from the database into a quiz session object*/
     public final SnapshotParser<QuizSession> SNAPSHOTPARSER_QUIZ_SESSION = new SnapshotParser<QuizSession>() {
         @NonNull
         @Override
@@ -75,6 +79,7 @@ public class QuizService {
         }
     };
 
+    /** Parses a student choice retrieved from the database into a student choice object*/
     public final SnapshotParser<StudentChoice> SNAPSHOTPARSER_STUDENT_CHOICE = new SnapshotParser<StudentChoice>() {
         @NonNull
         @Override
@@ -88,7 +93,6 @@ public class QuizService {
 
     /**
      * Creates a question with the provided information
-     * Note that an array list of choices must be provided
      * @param text the text for the question
      * @param pointsWorth the amount of points the question is worth
      * @param createdBy the user id of the creator of the question
@@ -140,7 +144,7 @@ public class QuizService {
     }
 
     /**
-     * Gets a question based on the provided question id
+     * Gets a question WITH its choices (choices are set) based on the provided question id
      * @param questionId the id of the question
      * @param onSuccessListener the callback if successful. Returns the question that was retrieved.
      * @param onFailureListener the callback if there was a failure.
@@ -172,7 +176,7 @@ public class QuizService {
     }
 
     /**
-     * Gets a list of questions (without their choices) based on the provided user id of the creator
+     * Gets a list of questions WITHOUT their choices (choices are null) based on the provided user id of the creator
      * @param createdBy the user id of the creator of the questions
      * @param onSuccessListener the callback if successful. Returns the list of questions that was retrieved.
      * @param onFailureListener the callback if there was a failure.
@@ -198,7 +202,6 @@ public class QuizService {
 
     /**
      * Creates a quiz with the provided information
-     * Note that an array list of questions must be provided
      * @param name the name of the quiz
      * @param instructions the instructions for the quiz
      * @param createdBy the user id of the creator of the quiz
@@ -243,7 +246,7 @@ public class QuizService {
     }
 
     /**
-     * Gets a quiz based on the provided quiz id
+     * Gets a quiz WITH its questions (questions are set) based on the provided quiz id
      * @param quizId the id of the quiz
      * @param onSuccessListener the callback if successful. Returns the quiz that was retrieved.
      * @param onFailureListener the callback if there was a failure.
@@ -311,7 +314,7 @@ public class QuizService {
     }
 
     /**
-     * Gets a list of quizzes (without their questions) based on the provided user id of the creator
+     * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator
      * @param createdBy the user id of the creator of the quizzes
      * @param onSuccessListener the callback if successful. Returns the list of quizzes that was retrieved.
      * @param onFailureListener the callback if there was a failure.
@@ -334,6 +337,15 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Creates a quiz session with the provided information
+     * @param classId the id of the class
+     * @param quizId the id of the quiz
+     * @param startTime the start time of the class
+     * @param endTime the end time of the class
+     * @param onSuccessListener the callback if successful. Returns the quiz session that was created.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void createQuizSession(final String classId, final String quizId, final Date startTime, final Date endTime,
                                   final OnSuccessListener<QuizSession> onSuccessListener,
                                   final OnFailureListener onFailureListener) {
@@ -364,6 +376,12 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a quiz session based on the provided quiz session id
+     * @param quizSessionId the id of the quiz session
+     * @param onSuccessListener the callback if successful. Returns the quiz session that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getQuizSession(final String quizSessionId,
                                   final OnSuccessListener<QuizSession> onSuccessListener,
                                   final OnFailureListener onFailureListener) {
@@ -378,6 +396,12 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a list of quiz sessions based on the provided user id
+     * @param studentId the id of the user
+     * @param onSuccessListener the callback if successful. Returns the list of quiz sessions that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getStudentQuizSessions(final String studentId,
                                final OnSuccessListener<ArrayList<QuizSession>> onSuccessListener,
                                final OnFailureListener onFailureListener) {
@@ -411,6 +435,15 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Creates a batch of student choices with the provided information
+     * @param studentId the id of the user
+     * @param quizSessionId the id of the quiz session
+     * @param grade the grade the student received
+     * @param studentChoices the list of choices for the student made
+     * @param onSuccessListener the callback if successful.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void recordStudentChoices(final String studentId, final String quizSessionId, final double grade, final ArrayList<StudentChoice> studentChoices,
                                      final OnSuccessListener<Void> onSuccessListener,
                                      final OnFailureListener onFailureListener) {
@@ -444,6 +477,13 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a list of student choices based on the provided information
+     * @param studentId the id of the user
+     * @param quizSessionId the id of the quiz session
+     * @param onSuccessListener the callback if successful. Returns the list of student choices that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getStudentChoices(final String studentId, final String quizSessionId,
                                   final OnSuccessListener<ArrayList<StudentChoice>> onSuccessListener,
                                   final OnFailureListener onFailureListener) {
@@ -465,6 +505,14 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a student choice based on the provided information
+     * @param studentId the id of the user
+     * @param quizSessionId the id of the quiz session
+     * @param questionId the id of the question
+     * @param onSuccessListener the callback if successful. Returns the student choice that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getStudentChoice(final String studentId, final String quizSessionId, final String questionId,
                                   final OnSuccessListener<StudentChoice> onSuccessListener,
                                   final OnFailureListener onFailureListener) {
@@ -486,6 +534,13 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Updates the last quiz session id of a class to the specified quiz session
+     * @param classId the id of the class
+     * @param quizSessionId the id of the quiz session
+     * @param onSuccessListener the callback if successful.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void administerQuiz(final String classId, final String quizSessionId,
                                final OnSuccessListener<Void> onSuccessListener,
                                final OnFailureListener onFailureListener) {

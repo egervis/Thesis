@@ -31,6 +31,10 @@ public class StudentChoice {
         return choiceNum;
     }
 
+    /**
+     * Checks if this student choice is the correct choice for the current question
+     * @param choices the list of choices to compare the student choice to
+     */
     public boolean isCorrect(ArrayList<Choice> choices) throws Exception {
         int i = 0;
         for(Choice choice:choices)

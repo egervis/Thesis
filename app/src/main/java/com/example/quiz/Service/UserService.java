@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserService {
+    /** Gets a database instance*/
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /** Parses a user retrieved from the database into a user object*/
     public final SnapshotParser<User> SNAPSHOTPARSER_USER = new SnapshotParser<User>() {
         @NonNull
         @Override
@@ -32,10 +34,17 @@ public class UserService {
         }
     };
 
+    /**
+     * Creates a user with the provided information
+     * @param firstName the first name of the user
+     * @param lastName the last name of the user
+     * @param email the email of the user
+     * @param onSuccessListener the callback if successful. Returns the user that was created.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void createUser(final String firstName, final String lastName, final String email,
                                   final OnSuccessListener<User> onSuccessListener,
-                                  final OnFailureListener onFailureListener)
-    {
+                                  final OnFailureListener onFailureListener) {
         String f = firstName;
         String l = lastName;
         String e = email;
@@ -61,10 +70,15 @@ public class UserService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a user based on the provided user id
+     * @param userId the id of the user
+     * @param onSuccessListener the callback if successful. Returns the user that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getUser(final String userId,
                            final OnSuccessListener<User> onSuccessListener,
-                           final OnFailureListener onFailureListener)
-    {
+                           final OnFailureListener onFailureListener) {
         String id = userId;
         if(userId.equals(""))
             id = null;
@@ -78,10 +92,15 @@ public class UserService {
         }).addOnFailureListener(onFailureListener);
     }
 
+    /**
+     * Gets a list of users based on the provided user ids
+     * @param userIds the list of ids of the users
+     * @param onSuccessListener the callback if successful. Returns the list of users that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
     public void getUsers(final ArrayList<String> userIds,
                     final OnSuccessListener<ArrayList<User>> onSuccessListener,
-                    final OnFailureListener onFailureListener)
-    {
+                    final OnFailureListener onFailureListener) {
         ArrayList<String> uIds = userIds;
 
         if(userIds!=null)
