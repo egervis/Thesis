@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
 //        Date start = calendar.getTime();
 //        calendar.add(Calendar.MONTH, 3);
 //        final Date end = calendar.getTime();
-//        classService.createClass("class2", "1", start, end, "qfrZy6uEHLO150Ixi6F3",
+//        classService.createClass("class3", "1", start, end, "qfrZy6uEHLO150Ixi6F3",
 //                new OnSuccessListener<Classroom>() {
 //                    @Override
 //                    public void onSuccess(Classroom classroom) {

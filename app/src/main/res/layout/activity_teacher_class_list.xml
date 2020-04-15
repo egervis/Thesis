@@ -26,41 +26,67 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout3">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/noClassesTeacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Temp, no items yet" />
+            android:text="No classes avaliable."
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/classesTeacherRV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <Button
+            android:id="@+id/classMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Classes" />
 
         <Button
             android:id="@+id/questionMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Question Bank" />
 
         <Button
             android:id="@+id/quizMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Quiz Bank" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

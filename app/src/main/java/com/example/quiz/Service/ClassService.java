@@ -181,15 +181,16 @@ public class ClassService {
     }
 
     /**
-     * Gets a list of classes WITHOUT (teachers and students are null) its users based on the provided user id
+     * Gets a list of classes WITHOUT (teachers and students are null) its users based on the provided user id and role of user
      * @param userId the user id
+     * @param role the role of the user
      * @param onSuccessListener the callback if successful. Returns the list of classes (classrooms) that was retrieved.
      * @param onFailureListener the callback if there was a failure.
      */
-    public void  getClasses(final String userId,
+    public void  getClasses(final String userId, final String role,
                                    final OnSuccessListener<ArrayList<Classroom>> onSuccessListener,
                                    final OnFailureListener onFailureListener) {
-        //TODO: blank checks
+        //TODO: role/blank checks
 
         db.collection("user_class").whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -197,8 +198,11 @@ public class ClassService {
                 ArrayList<String> classIds = new ArrayList<>();
                 for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
                 {
-                    classIds.add(docSnap.getString("classId"));
+                    if(docSnap.getString("role").equals(role))
+                        classIds.add(docSnap.getString("classId"));
                 }
+                if(classIds.size() == 0)
+                    classIds.add("null");
                 db.collection("class").whereIn(FieldPath.documentId(), classIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
