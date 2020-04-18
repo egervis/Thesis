@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout2"
+    android:id="@+id/coordinatorLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controller.RoleSelectActivity">
+    tools:context=".Controller.CreateClassActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout2"
+        android:id="@+id/appBarLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -26,8 +26,8 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="50dp"
@@ -36,19 +36,45 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout4">
 
-        <Button
-            android:id="@+id/teacherSelectButton"
+        <EditText
+            android:id="@+id/classNameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/teacher" />
+            android:ems="10"
+            android:hint="@string/class_name"
+            android:inputType="textPersonName" />
 
-        <Button
-            android:id="@+id/studentSelectButton"
+        <EditText
+            android:id="@+id/classSectionInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/student" />
+            android:ems="10"
+            android:hint="@string/class_section_number"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/classStartDateInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/class_start_date"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/classEndDateInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/class_end_dare"
+            android:inputType="date" />
+
+        <Button
+            android:id="@+id/createClassButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_class" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -338,6 +338,27 @@ public class QuizService {
     }
 
     /**
+     * Gets a quiz name based on the provided quiz id
+     * @param quizId the id of the quiz
+     * @param onSuccessListener the callback if successful. Returns the quiz name that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getQuizName(final String quizId,
+                        final OnSuccessListener<String> onSuccessListener,
+                        final OnFailureListener onFailureListener) {
+
+        //TODO: blank checks
+
+        db.collection("quiz").document(quizId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Quiz quiz = SNAPSHOTPARSER_QUIZ.parseSnapshot(documentSnapshot);
+                onSuccessListener.onSuccess(quiz.getName());
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    /**
      * Creates a quiz session with the provided information
      * @param classId the id of the class
      * @param quizId the id of the quiz
@@ -397,12 +418,13 @@ public class QuizService {
     }
 
     /**
-     * Gets a list of quiz sessions based on the provided user id
+     * Gets a list of quiz sessions based on the provided user id and class id
      * @param studentId the id of the user
+     * @param classId the id of the class
      * @param onSuccessListener the callback if successful. Returns the list of quiz sessions that was retrieved.
      * @param onFailureListener the callback if there was a failure.
      */
-    public void getStudentQuizSessions(final String studentId,
+    public void getStudentQuizSessions(final String studentId, final String classId,
                                final OnSuccessListener<ArrayList<QuizSession>> onSuccessListener,
                                final OnFailureListener onFailureListener) {
         //TODO: blank checks
@@ -417,6 +439,8 @@ public class QuizService {
                     qIds.add(docSnap.getString("quizSessionId"));
                     grades.add(docSnap.getDouble("grade")+"");
                 }
+                if(qIds.size()==0)
+                    qIds.add("null");
                 db.collection("quiz_session").whereIn(FieldPath.documentId(), qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -428,7 +452,11 @@ public class QuizService {
                             quizSession.setGrade(Double.parseDouble(grades.get(qIds.indexOf(id))));
                             quizSessions.add(quizSession);
                         }
-                        onSuccessListener.onSuccess(quizSessions);
+                        ArrayList<QuizSession> studentClassSessions = new ArrayList<>();
+                        for(QuizSession q:quizSessions)
+                            if(q.getClassId().equals(classId))
+                                studentClassSessions.add(q);
+                        onSuccessListener.onSuccess(studentClassSessions);
                     }
                 }).addOnFailureListener(onFailureListener);
             }

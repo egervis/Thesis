@@ -46,9 +46,4 @@ public class QuizSession {
     public void setGrade(double grade) {
         this.grade = grade;
     }
-
-    //compute, set and return grade. parameters tbd
-    public double computeGrade() {
-        return 0;
-    }
 }

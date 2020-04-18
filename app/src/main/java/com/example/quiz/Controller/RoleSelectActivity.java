@@ -30,15 +30,14 @@ public class RoleSelectActivity extends AppCompatActivity {
             }
         });
 
-//        Button studentSelectButton = findViewById(R.id.studentSelectButton);
-//        studentSelectButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Intent intent = new Intent(RoleSelectActivity.this, RoleSelectActivity.class);
-//                intent.putExtra("id", getIntent().getStringExtra("id"));
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+        Button studentSelectButton = findViewById(R.id.studentSelectButton);
+        studentSelectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(RoleSelectActivity.this, StudentClassList.class);
+                intent.putExtra("id", getIntent().getStringExtra("id"));
+                startActivity(intent);
+            }
+        });
     }
 
 }

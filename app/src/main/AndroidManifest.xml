@@ -10,9 +10,69 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Controller.TakeQuizActivity"
+            android:label="@string/title_activity_take_quiz"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Controller.JoinClassActivity"
+            android:label="@string/title_activity_join_class"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.ClassViewStudentActivity"
+            android:label="@string/title_activity_class_view_student"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.StudentClassList"
+            android:label="@string/title_activity_student_class_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.AdministerQuizActivity"
+            android:label="@string/title_activity_administer_quiz"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.StudentChoiceViewActivity"
+            android:label="@string/title_activity_student_choice_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.StudentQuizSessionListActivity"
+            android:label="@string/title_activity_student_quiz_session_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.ClassViewActivity"
+            android:label="@string/title_activity_class_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.CreateQuizActivity"
+            android:label="@string/title_activity_create_quiz"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.QuizViewActivity"
+            android:label="@string/title_activity_quiz_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.QuizListActivity"
+            android:label="@string/title_activity_quiz_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.CreateQuestionActivity"
+            android:label="@string/title_activity_create_question"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.QuestionViewActivity"
+            android:label="@string/title_activity_question_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.QuestionListActivity"
+            android:label="@string/title_activity_question_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Controller.CreateClassActivity"
+            android:label="@string/title_activity_create_class"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Controller.TeacherClassList"
             android:label="@string/title_activity_teacher_class_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Controller.RoleSelectActivity"
             android:label="@string/title_activity_role_select"

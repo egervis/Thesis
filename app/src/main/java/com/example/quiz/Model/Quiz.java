@@ -46,4 +46,9 @@ public class Quiz {
     public ArrayList<Question> getQuestions() {
         return questions;
     }
+
+    //compute and return grade. parameters tbd
+    public double computeGrade() {
+        return 100;
+    }
 }

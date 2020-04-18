@@ -418,5 +418,17 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
+//        QuizService quizService = new QuizService();
+//        quizService.getQuestions("temp", new OnSuccessListener<ArrayList<Question>>() {
+//            @Override
+//            public void onSuccess(ArrayList<Question> questions) {
+//                System.out.println(questions.size());
+//            }
+//        }, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                System.out.println("bad");
+//            }
+//        });
     }
 }

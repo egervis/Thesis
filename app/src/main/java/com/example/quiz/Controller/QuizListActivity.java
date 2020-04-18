@@ -3,13 +3,11 @@ package com.example.quiz.Controller;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.quiz.Controller.RecyclerViewAdapter.ClassListAdapter;
-import com.example.quiz.Model.Classroom;
-import com.example.quiz.Service.ClassService;
+import com.example.quiz.Controller.RecyclerViewAdapter.QuizListAdapter;
+import com.example.quiz.Model.Quiz;
+import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +23,7 @@ import com.example.quiz.R;
 
 import java.util.ArrayList;
 
-public class TeacherClassList extends AppCompatActivity {
+public class QuizListActivity extends AppCompatActivity {
     private String userId;
 
     private RecyclerView recyclerView;
@@ -34,7 +32,7 @@ public class TeacherClassList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher_class_list);
+        setContentView(R.layout.activity_quiz_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -45,65 +43,66 @@ public class TeacherClassList extends AppCompatActivity {
     }
 
     private void makeRV() {
-        recyclerView = findViewById(R.id.classesTeacherRV);
+        recyclerView = findViewById(R.id.quizListTeacherRV);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        ClassService classService = new ClassService();
-        classService.getClasses(userId, "teacher", new OnSuccessListener<ArrayList<Classroom>>() {
+
+        QuizService quizService = new QuizService();
+        quizService.getQuizzes(userId, new OnSuccessListener<ArrayList<Quiz>>() {
             @Override
-            public void onSuccess(ArrayList<Classroom> classrooms) {
-                TextView text = findViewById(R.id.noClassesTeacher);
-                if(classrooms.size() == 0)
+            public void onSuccess(ArrayList<Quiz> quizzes) {
+                TextView text = findViewById(R.id.noQuizzesTeacher);
+                if(quizzes.size() == 0)
                     text.setVisibility(View.VISIBLE);
                 else
                     text.setVisibility(View.GONE);
-                recyclerViewAdapter = new ClassListAdapter(classrooms, TeacherClassList.this, userId);
+                recyclerViewAdapter = new QuizListAdapter(quizzes, QuizListActivity.this);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         }, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                System.out.println("Failed to get classes "+ e);
+                System.out.println("Failed to get quizzes "+ e);
             }
         });
     }
 
     private void setOnClicks() {
-        Button createClass = findViewById(R.id.createClassMenuButton);
+        Button createClass = findViewById(R.id.createQuizMenuButton);
         createClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, CreateClassActivity.class);
+                Intent intent = new Intent(QuizListActivity.this, CreateQuizActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }
         });
 
-        Button classMenu = findViewById(R.id.classMenuButtonTCL);
+        Button classMenu = findViewById(R.id.classMenuButtonQZL);
         classMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do nothing
+                Intent intent = new Intent(QuizListActivity.this, TeacherClassList.class);
+                intent.putExtra("id", userId);
+                startActivity(intent);
             }
         });
 
-        Button questionMenu = findViewById(R.id.questionMenuButtonTCL);
+        Button questionMenu = findViewById(R.id.questionMenuButtonQZL);
         questionMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, QuestionListActivity.class);
+                Intent intent = new Intent(QuizListActivity.this, QuestionListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }
         });
 
-        Button quizMenu = findViewById(R.id.quizMenuButtonTCL);
+        Button quizMenu = findViewById(R.id.quizMenuButtonQZL);
         quizMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, QuizListActivity.class);
-                intent.putExtra("id", userId);
-                startActivity(intent);
+                //do nothing
             }
         });
     }
@@ -112,6 +111,5 @@ public class TeacherClassList extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         makeRV();
-
     }
 }

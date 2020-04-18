@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout3"
+    android:id="@+id/coordinatorLayout8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controller.TeacherClassList">
+    tools:context=".Controller.QuizListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout3"
+        android:id="@+id/appBarLayout8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -26,7 +26,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout5"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="50dp"
@@ -36,28 +36,29 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout8">
 
         <TextView
-            android:id="@+id/noClassesTeacher"
+            android:id="@+id/noQuizzesTeacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_classes_avaliable"
+            android:text="@string/no_quizzes_avaliable"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/classesTeacherRV"
+            android:id="@+id/quizListTeacherRV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/createClassMenuButton"
+            android:id="@+id/createQuizMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_class" />
+            android:text="@string/create_quiz" />
 
     </LinearLayout>
 
@@ -71,24 +72,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
         <Button
-            android:id="@+id/classMenuButtonTCL"
+            android:id="@+id/classMenuButtonQZL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/classes" />
 
         <Button
-            android:id="@+id/questionMenuButtonTCL"
+            android:id="@+id/questionMenuButtonQZL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/question_bank" />
 
         <Button
-            android:id="@+id/quizMenuButtonTCL"
+            android:id="@+id/quizMenuButtonQZL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
