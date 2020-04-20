@@ -113,6 +113,8 @@ public class UserService {
                 }
 
             }
+            if(uIds.size() == 0)
+                uIds.add("null");
         }
 
         db.collection("user").whereIn(FieldPath.documentId(), uIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
