@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.quiz.Model.Classroom;
 import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.Model.User;
 import com.example.quiz.Service.ClassService;
 import com.example.quiz.Service.QuizService;
@@ -88,13 +89,13 @@ public class ClassViewStudentActivity extends AppCompatActivity {
 
                                         if(valid)
                                         {
-                                            quizService.getStudentQuizSessions(userId, classId, new OnSuccessListener<ArrayList<QuizSession>>() {
+                                            quizService.getStudentQuizSessions(userId, classId, new OnSuccessListener<ArrayList<QuizSessionStudent>>() {
                                                 @Override
-                                                public void onSuccess(ArrayList<QuizSession> quizSessions) {
+                                                public void onSuccess(ArrayList<QuizSessionStudent> quizSessions) {
                                                     boolean quizTaken = false;
-                                                    for(QuizSession q:quizSessions)
+                                                    for(QuizSessionStudent q:quizSessions)
                                                     {
-                                                        if(q.getId().equals(quizSession.getId()))
+                                                        if(q.getQuizSessionId().equals(quizSession.getId()))
                                                             quizTaken = true;
                                                     }
                                                     if(quizSessions.size()==0 || !quizTaken) {

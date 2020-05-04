@@ -23,10 +23,14 @@ import android.widget.Toast;
 
 import com.example.quiz.R;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class TakeQuizActivity extends AppCompatActivity {
     private String userId;
     private String quizSessionId;
     private String quizId;
+    private Date startTime;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerViewAdapter;
@@ -41,6 +45,9 @@ public class TakeQuizActivity extends AppCompatActivity {
         userId = getIntent().getExtras().getString("id");
         quizSessionId = getIntent().getExtras().getString("quizSessionId");
         quizId = getIntent().getExtras().getString("quizId");
+
+        Calendar calendar = Calendar.getInstance();
+        startTime = calendar.getTime();
 
         makeRV();
     }
@@ -76,7 +83,8 @@ public class TakeQuizActivity extends AppCompatActivity {
                 boolean valid = a.isValid();
                 if(valid) {
                     QuizService quizService = new QuizService();
-                    quizService.recordStudentChoices(userId, quizSessionId, quiz.computeGrade(), a.getStudentChoices(), new OnSuccessListener<Void>() {
+                    Calendar calendar = Calendar.getInstance();
+                    quizService.recordStudentChoices(userId, quizSessionId, quiz.computeGrade(), startTime, calendar.getTime(), a.getStudentChoices(), new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast toast = Toast.makeText(getApplicationContext(), "Quiz submitted.", Toast.LENGTH_SHORT);

@@ -23,13 +23,18 @@ import android.widget.TextView;
 
 import com.example.quiz.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class StudentChoiceViewActivity extends AppCompatActivity {
     private String studentId;
     private String quizId;
     private double quizGrade;
     private String quizSessionId;
+    private Date startTime;
+    private Date endTime;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerViewAdapter;
@@ -45,6 +50,8 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         quizId = getIntent().getExtras().getString("quizId");
         quizGrade = getIntent().getExtras().getDouble("quizGrade");
         quizSessionId = getIntent().getExtras().getString("quizSessionId");
+        startTime = (Date) getIntent().getExtras().get("startTime");
+        endTime = (Date) getIntent().getExtras().get("endTime");
 
         makeRV();
     }
@@ -57,7 +64,7 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         quizService.getQuiz(quizId, new OnSuccessListener<Quiz>() {
             @Override
             public void onSuccess(final Quiz quiz) {
-                displayInfo(quiz.getName(), quizGrade);
+                displayInfo(quiz.getName(), quizGrade, startTime, endTime);
                 quizService.getStudentChoices(studentId, quizSessionId, new OnSuccessListener<ArrayList<StudentChoice>>() {
                     @Override
                     public void onSuccess(ArrayList<StudentChoice> studentChoices) {
@@ -79,10 +86,18 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         });
     }
 
-    private void displayInfo(String name, double grade) {
+    private void displayInfo(String name, double grade, Date startTime, Date endTime) {
         TextView nameText = findViewById(R.id.quizNameSC);
         TextView gradeText = findViewById(R.id.quizGradeSC);
+        TextView dateText = findViewById(R.id.quizDateSC);
+        TextView startTimeText = findViewById(R.id.quizStartTimeSC);
+        TextView endTimeText = findViewById(R.id.quizEndTimeSC);
         nameText.setText(name);
         gradeText.setText("Grade: "+grade);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        dateText.setText("Date: " + formatter.format(startTime));
+        formatter = new SimpleDateFormat("hh:mm aa");
+        startTimeText.setText("Start Time: "+ formatter.format(startTime));
+        endTimeText.setText("End Time: "+ formatter.format(endTime));
     }
 }

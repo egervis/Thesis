@@ -8,7 +8,6 @@ public class QuizSession {
     private String quizId;
     private Date startTime;
     private Date endTime;
-    private Double grade;//can be null
 
     public QuizSession(String id, String classId, String quizId, Date startTime, Date endTime) {
         this.id = id;
@@ -16,7 +15,6 @@ public class QuizSession {
         this.quizId = quizId;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.grade = null;
     }
 
     public String getId() {
@@ -37,13 +35,5 @@ public class QuizSession {
 
     public Date getEndTime() {
         return endTime;
-    }
-
-    public Double getGrade() {
-        return grade;
-    }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
     }
 }

@@ -32,6 +32,9 @@ public class ChoiceListQuizAdapter extends RecyclerView.Adapter<ChoiceListQuizAd
         this.studentId = studentId;
         this.isMulti = isMulti;
         studentChoices = new ArrayList<>();
+
+        StudentChoice studentChoice = new StudentChoice(studentId, quizSessionId, questionId, 0);
+        studentChoices.add(studentChoice);
     }
 
     @NonNull
@@ -51,6 +54,11 @@ public class ChoiceListQuizAdapter extends RecyclerView.Adapter<ChoiceListQuizAd
                 {
                     StudentChoice studentChoice = new StudentChoice(studentId, quizSessionId, questionId, choices.get(position).getChoiceNum());
                     studentChoices.add(studentChoice);
+                    for(int i=0; i<studentChoices.size(); i++)
+                    {
+                        if(studentChoices.get(i).getChoiceNum() == 0)
+                            studentChoices.remove(i);
+                    }
                 }
                 else
                 {
@@ -58,6 +66,11 @@ public class ChoiceListQuizAdapter extends RecyclerView.Adapter<ChoiceListQuizAd
                     {
                         if(studentChoices.get(i).getChoiceNum() == choices.get(position).getChoiceNum())
                             studentChoices.remove(i);
+                    }
+                    if(studentChoices.size() == 0)
+                    {
+                        StudentChoice studentChoice = new StudentChoice(studentId, quizSessionId, questionId, 0);
+                        studentChoices.add(studentChoice);
                     }
                 }
             }
@@ -74,8 +87,6 @@ public class ChoiceListQuizAdapter extends RecyclerView.Adapter<ChoiceListQuizAd
     }
 
     public boolean isValid() {
-        if(studentChoices.size() == 0)
-            return false;
         if(!isMulti && studentChoices.size() >1)
             return false;
         return true;

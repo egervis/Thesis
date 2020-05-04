@@ -6,6 +6,7 @@ import com.example.quiz.Model.Choice;
 import com.example.quiz.Model.Question;
 import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.Model.StudentChoice;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,6 +77,19 @@ public class QuizService {
                     snapshot.getString("quizId"),
                     snapshot.getDate("startTime"),
                     snapshot.getDate("endTime"));
+        }
+    };
+
+    /** Parses a student quiz session retrieved from the database into a student quiz session object*/
+    public final SnapshotParser<QuizSessionStudent> SNAPSHOTPARSER_QUIZ_SESSION_STUDENT = new SnapshotParser<QuizSessionStudent>() {
+        @NonNull
+        @Override
+        public QuizSessionStudent parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+            return new QuizSessionStudent(snapshot.getString("quizSessionId"),
+                    snapshot.getString("studentId"),
+                    snapshot.getDate("startTime"),
+                    snapshot.getDate("endTime"),
+                    snapshot.getDouble("grade"));
         }
     };
 
@@ -425,7 +439,7 @@ public class QuizService {
      * @param onFailureListener the callback if there was a failure.
      */
     public void getStudentQuizSessions(final String studentId, final String classId,
-                               final OnSuccessListener<ArrayList<QuizSession>> onSuccessListener,
+                               final OnSuccessListener<ArrayList<QuizSessionStudent>> onSuccessListener,
                                final OnFailureListener onFailureListener) {
         //TODO: blank checks
 
@@ -433,11 +447,11 @@ public class QuizService {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 final ArrayList<String> qIds = new ArrayList<>();
-                final ArrayList<String> grades = new ArrayList<>();
+                final ArrayList<QuizSessionStudent> quizSessionStudent = new ArrayList<>();
                 for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
                 {
                     qIds.add(docSnap.getString("quizSessionId"));
-                    grades.add(docSnap.getDouble("grade")+"");
+                    quizSessionStudent.add(SNAPSHOTPARSER_QUIZ_SESSION_STUDENT.parseSnapshot(docSnap));
                 }
                 if(qIds.size()==0)
                     qIds.add("null");
@@ -447,16 +461,18 @@ public class QuizService {
                         ArrayList<QuizSession> quizSessions = new ArrayList<>();
                         for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
                         {
-                            String id = snap.getId();
                             QuizSession quizSession = SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(snap);
-                            quizSession.setGrade(Double.parseDouble(grades.get(qIds.indexOf(id))));
                             quizSessions.add(quizSession);
                         }
-                        ArrayList<QuizSession> studentClassSessions = new ArrayList<>();
+                        ArrayList<String> studentClassSessions = new ArrayList<>();
                         for(QuizSession q:quizSessions)
                             if(q.getClassId().equals(classId))
-                                studentClassSessions.add(q);
-                        onSuccessListener.onSuccess(studentClassSessions);
+                                studentClassSessions.add(q.getId());
+                        final ArrayList<QuizSessionStudent> returnLst = new ArrayList<>();
+                        for(QuizSessionStudent s:quizSessionStudent)
+                            if(studentClassSessions.contains(s.getQuizSessionId()))
+                                returnLst.add(s);
+                        onSuccessListener.onSuccess(returnLst);
                     }
                 }).addOnFailureListener(onFailureListener);
             }
@@ -472,7 +488,7 @@ public class QuizService {
      * @param onSuccessListener the callback if successful.
      * @param onFailureListener the callback if there was a failure.
      */
-    public void recordStudentChoices(final String studentId, final String quizSessionId, final double grade, final ArrayList<StudentChoice> studentChoices,
+    public void recordStudentChoices(final String studentId, final String quizSessionId, final double grade, final Date startTime, final Date endTime, final ArrayList<StudentChoice> studentChoices,
                                      final OnSuccessListener<Void> onSuccessListener,
                                      final OnFailureListener onFailureListener) {
         //TODO: blank checks
@@ -484,6 +500,8 @@ public class QuizService {
         quizSessionStudentMap.put("studentId", studentId);
         quizSessionStudentMap.put("quizSessionId", quizSessionId);
         quizSessionStudentMap.put("grade", grade);
+        quizSessionStudentMap.put("startTime", startTime);
+        quizSessionStudentMap.put("endTime", endTime);
         batch.set(quizSessionStudent, quizSessionStudentMap);
 
         for(StudentChoice c: studentChoices)

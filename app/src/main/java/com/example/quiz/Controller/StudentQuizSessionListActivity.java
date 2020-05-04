@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuizSessionListAdapter;
 import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,10 +55,10 @@ public class StudentQuizSessionListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         QuizService quizService = new QuizService();
-        quizService.getStudentQuizSessions(studentId, classId, new OnSuccessListener<ArrayList<QuizSession>>() {
+        quizService.getStudentQuizSessions(studentId, classId, new OnSuccessListener<ArrayList<QuizSessionStudent>>() {
             @Override
-            public void onSuccess(ArrayList<QuizSession> quizSessions) {
-                recyclerViewAdapter = new QuizSessionListAdapter(quizSessions, StudentQuizSessionListActivity.this, studentId);
+            public void onSuccess(ArrayList<QuizSessionStudent> quizSessionsStudent) {
+                recyclerViewAdapter = new QuizSessionListAdapter(quizSessionsStudent, StudentQuizSessionListActivity.this, studentId);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         }, new OnFailureListener() {

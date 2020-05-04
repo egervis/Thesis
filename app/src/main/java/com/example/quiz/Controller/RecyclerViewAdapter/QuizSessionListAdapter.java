@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quiz.Controller.StudentChoiceViewActivity;
 import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.R;
 import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,11 +22,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 
 public class QuizSessionListAdapter extends RecyclerView.Adapter<QuizSessionListAdapter.QuizSessionHolder> {
-    private ArrayList<QuizSession> quizSessions;
+    private ArrayList<QuizSessionStudent> quizSessions;
     private Context context;
     private String userId;
 
-    public QuizSessionListAdapter(ArrayList<QuizSession> quizSessions, Context context, String userId) {
+    public QuizSessionListAdapter(ArrayList<QuizSessionStudent> quizSessions, Context context, String userId) {
         this.quizSessions = quizSessions;
         this.context = context;
         this.userId = userId;
@@ -40,30 +41,43 @@ public class QuizSessionListAdapter extends RecyclerView.Adapter<QuizSessionList
 
     @Override
     public void onBindViewHolder(@NonNull final QuizSessionHolder holder, final int position) {
-        QuizService quizService = new QuizService();
-        quizService.getQuizName(quizSessions.get(position).getQuizId(), new OnSuccessListener<String>() {
+        final QuizService quizService = new QuizService();
+        quizService.getQuizSession(quizSessions.get(position).getQuizSessionId(), new OnSuccessListener<QuizSession>() {
             @Override
-            public void onSuccess(String s) {
-                holder.name.setText(s);
-                holder.grade.setText("Grade: "+quizSessions.get(position).getGrade());
-                holder.info.setOnClickListener(new View.OnClickListener() {
+            public void onSuccess(final QuizSession quizSession) {
+                quizService.getQuizName(quizSession.getQuizId(), new OnSuccessListener<String>() {
                     @Override
-                    public void onClick(View v) {
-                      Intent intent = new Intent(context, StudentChoiceViewActivity.class);
-                      intent.putExtra("userId", userId);
-                      intent.putExtra("quizId", quizSessions.get(position).getQuizId());
-                      intent.putExtra("quizGrade", quizSessions.get(position).getGrade());
-                      intent.putExtra("quizSessionId", quizSessions.get(position).getId());
-                      context.startActivity(intent);
+                    public void onSuccess(String s) {
+                        holder.name.setText(s);
+                        holder.grade.setText("Grade: "+quizSessions.get(position).getGrade());
+                        holder.info.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(context, StudentChoiceViewActivity.class);
+                                intent.putExtra("userId", userId);
+                                intent.putExtra("quizId", quizSession.getQuizId());
+                                intent.putExtra("quizGrade", quizSessions.get(position).getGrade());
+                                intent.putExtra("quizSessionId", quizSession.getId());
+                                intent.putExtra("startTime", quizSessions.get(position).getStartTime());
+                                intent.putExtra("endTime", quizSessions.get(position).getEndTime());
+                                context.startActivity(intent);
+                            }
+                        });
+                    }
+                }, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Failed to get quiz name "+e);
                     }
                 });
             }
         }, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                System.out.println("Failed to get quiz name "+e);
+                System.out.println("Failed to get quiz session "+e);
             }
         });
+
     }
 
     @Override
