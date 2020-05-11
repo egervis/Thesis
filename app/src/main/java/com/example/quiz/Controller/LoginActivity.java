@@ -1,6 +1,7 @@
 package com.example.quiz.Controller;
 
 import android.content.Intent;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,17 @@ import com.example.quiz.Service.ClassService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import android.Manifest;
+import android.content.IntentFilter;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import java.util.Timer;
+import java.util.TimerTask;
+import android.util.Log;
+import android.content.pm.PackageManager;
+import android.os.Build;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
     //Temp vars
     private EditText idInput;
+    private static final int REQUEST_ENABLE_BT = 0;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Testing
         tempTesting();
+        bluetoothTesting();
 
         //Temp code
         idInput = findViewById(R.id.idInput);
@@ -111,6 +126,88 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void bluetoothTesting()
+    {
+//        boolean hasBluetooth = true;
+//        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (bluetoothAdapter == null) {
+//            hasBluetooth = false;
+//            System.out.println("no bluetooth");
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+//            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+//
+//
+//        if(hasBluetooth)
+//        {
+//            if (!bluetoothAdapter.isEnabled()) {
+//                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//            }
+//            if (bluetoothAdapter.isEnabled()) {
+//                receiver = new BroadcastReceiver() {
+//                    public void onReceive(Context context, Intent intent) {
+//                        String action = intent.getAction();
+//                        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//                            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                            String deviceName = device.getName();
+//                            String deviceHardwareAddress = device.getAddress();
+//                            Log.v("bluetooth test", "Device with mac address " + deviceHardwareAddress + " found.");
+//                        }
+//                    }
+//                };
+//                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+//                registerReceiver(receiver, filter);
+//                bluetoothAdapter.startDiscovery();
+//                Timer mTimer = new Timer();
+//                TimerTask mTimerTask = new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (bluetoothAdapter.isDiscovering()) {
+//                                    // Cancel followed by a start searches for bluetooth devices again
+//                                    // Not doing this would result in the search not being updated
+//                                    bluetoothAdapter.cancelDiscovery();
+//                                    bluetoothAdapter.startDiscovery();
+//                                } else {
+//                                    bluetoothAdapter.startDiscovery();
+//                                }
+//                            }
+//                        });
+//                    }
+//                };
+//
+//                mTimer.schedule(mTimerTask, 0, 10000);
+//
+//            }
+//        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[],
+//                                           int[] grantResults) {
+//        if(requestCode == 1)
+//        {
+//            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+//                Log.v("bluetooth test","location granted");
+//            else
+//            {
+//                Toast toast = Toast.makeText(getApplicationContext(), "location denied, bluetooth inactive", Toast.LENGTH_SHORT);
+//                toast.show();
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        unregisterReceiver(receiver);
+//    }
     //used for manual testing until firebase is fully set up and input/blank checks are in place
     public void tempTesting()
     {
