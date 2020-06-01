@@ -38,6 +38,8 @@ public class StudentClassList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Classes");
+
         userId = getIntent().getExtras().getString("id");
 
         joinClass();

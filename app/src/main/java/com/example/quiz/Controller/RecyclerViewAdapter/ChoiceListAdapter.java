@@ -1,5 +1,6 @@
 package com.example.quiz.Controller.RecyclerViewAdapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,10 @@ import java.util.ArrayList;
 
 public class ChoiceListAdapter extends RecyclerView.Adapter<ChoiceListAdapter.ChoiceHolder>{
     private ArrayList<Choice> choices;
-    public ChoiceListAdapter(ArrayList<Choice> choices) {
+    private Context context;
+    public ChoiceListAdapter(ArrayList<Choice> choices, Context context) {
         this.choices = choices;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -28,7 +31,15 @@ public class ChoiceListAdapter extends RecyclerView.Adapter<ChoiceListAdapter.Ch
     @Override
     public void onBindViewHolder(@NonNull ChoiceHolder holder, int position) {
         holder.choiceText.setText(choices.get(position).getChoiceText());
-        holder.correct.setText("Is Correct: "+choices.get(position).isCorrect());
+        holder.number.setText((position+1)+")  ");
+        if(choices.get(position).isCorrect())
+        {
+            holder.choiceText.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_check_circle_green_800_24dp,0);
+        }
+        else
+        {
+            holder.choiceText.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_cancel_red_800_24dp,0);
+        }
     }
 
     @Override
@@ -38,11 +49,11 @@ public class ChoiceListAdapter extends RecyclerView.Adapter<ChoiceListAdapter.Ch
 
     public class ChoiceHolder extends RecyclerView.ViewHolder {
         public TextView choiceText;
-        public TextView correct;
+        public TextView number;
         public ChoiceHolder(View itemView) {
             super(itemView);
             choiceText = itemView.findViewById(R.id.choiceTextinHolder);
-            correct = itemView.findViewById(R.id.choiceCorrectInHolder);
+            number = itemView.findViewById(R.id.choiceNumberInHolder);
         }
     }
 }

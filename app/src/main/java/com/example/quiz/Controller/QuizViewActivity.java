@@ -34,6 +34,10 @@ public class QuizViewActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Quizzes");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         quizId = getIntent().getExtras().getString("quizId");
 
         makeRV();
@@ -70,4 +74,9 @@ public class QuizViewActivity extends AppCompatActivity {
         categoryText.setText(category);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }

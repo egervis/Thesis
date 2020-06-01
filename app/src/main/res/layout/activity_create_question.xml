@@ -5,12 +5,14 @@
     android:id="@+id/coordinatorLayout7"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".Controller.CreateQuestionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -74,15 +76,24 @@
             android:id="@+id/multiselectSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/is_multiselect"
+            android:text="@string/multiselect_question"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choice"
+            android:text="@string/choice_entry"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
@@ -94,19 +105,28 @@
             android:hint="@string/choice_text"
             android:inputType="textPersonName" />
 
-        <Switch
-            android:id="@+id/correctSwitch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/is_correct"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="24sp" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/addChoiceButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add_choice" />
+            <Switch
+                android:id="@+id/correctSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/correct_choice"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/addChoiceButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/white"
+                android:text="@string/add_choice" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView3"
@@ -126,6 +146,7 @@
             android:id="@+id/createQuestionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
             android:text="@string/create_question" />
 
     </LinearLayout>

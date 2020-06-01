@@ -11,5 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/temp"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="18sp" />
 </LinearLayout>

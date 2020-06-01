@@ -39,6 +39,7 @@ public class QuestionListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         userId = getIntent().getExtras().getString("id");
+        getSupportActionBar().setTitle("Questions");
 
         setOnClicks();
         makeRV();

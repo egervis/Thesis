@@ -44,6 +44,10 @@ public class CreateQuestionActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Create Question");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         userId = getIntent().getExtras().getString("id");
         choices = new ArrayList<>(0);
         checkSwitches();
@@ -90,7 +94,7 @@ public class CreateQuestionActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.listOfCreatedChoices);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new ChoiceListAdapter(choices);
+        recyclerViewAdapter = new ChoiceListAdapter(choices, getApplicationContext());
         recyclerView.setAdapter(recyclerViewAdapter);
     }
     private void makeQuestion() {
@@ -146,5 +150,11 @@ public class CreateQuestionActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

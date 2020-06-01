@@ -20,6 +20,7 @@ public class RoleSelectActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Role Select");
 
         Button teacherSelectButton = findViewById(R.id.teacherSelectButton);
         teacherSelectButton.setOnClickListener(new View.OnClickListener() {

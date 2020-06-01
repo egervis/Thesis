@@ -34,6 +34,10 @@ public class AdministerQuizActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Administer Quiz");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         userId = getIntent().getExtras().getString("id");
         classId = getIntent().getExtras().getString("classId");
 
@@ -59,5 +63,11 @@ public class AdministerQuizActivity extends AppCompatActivity {
                 System.out.println("Failed to get quizzes " + e);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

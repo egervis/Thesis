@@ -45,7 +45,7 @@ public class QuestionListQuizAdapter extends RecyclerView.Adapter<QuestionListQu
         String multi = "";
         if(questions.get(position).isMultiselect())
             multi = " (This question has multiple answers)";
-        holder.text.setText(questions.get(position).getText()+multi);
+        holder.text.setText((position+1)+")  "+questions.get(position).getText()+multi);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         ChoiceListQuizAdapter a = new ChoiceListQuizAdapter(questions.get(position).getChoices(), questions.get(position).getId(), quizSessionId, studentId, questions.get(position).isMultiselect());
         adapters.add(a);

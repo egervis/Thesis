@@ -39,6 +39,7 @@ public class TeacherClassList extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         userId = getIntent().getExtras().getString("id");
+        getSupportActionBar().setTitle("Classes");
 
         setOnClicks();
         makeRV();

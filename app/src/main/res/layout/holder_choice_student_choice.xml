@@ -19,36 +19,22 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/choiceTextInHolderSC"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="@string/temp"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/choiceTextInHolderSC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/temp"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="24sp" />
+        <TextView
+            android:id="@+id/choiceIsStudentInHolderSC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/choiceIsCorrectInHolderSC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/temp"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/choiceIsStudentInHolderSC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/temp"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="24sp" />
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

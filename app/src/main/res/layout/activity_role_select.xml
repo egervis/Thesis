@@ -5,12 +5,14 @@
     android:id="@+id/coordinatorLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".Controller.RoleSelectActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,7 +34,6 @@
         android:layout_marginTop="100dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="100dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,13 +43,23 @@
             android:id="@+id/teacherSelectButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/teacher" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:drawableTop="@drawable/ic_local_library_black_48dp"
+            android:text="@string/teacher"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/studentSelectButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/student" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:drawableTop="@drawable/ic_school_black_48dp"
+            android:text="@string/student"
+            android:textSize="24sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

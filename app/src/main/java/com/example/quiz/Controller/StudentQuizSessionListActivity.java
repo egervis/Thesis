@@ -39,6 +39,10 @@ public class StudentQuizSessionListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Quiz Sessions");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         studentId = getIntent().getExtras().getString("userId");
         userName = getIntent().getExtras().getString("userName");
         classId = getIntent().getExtras().getString("classId");
@@ -67,5 +71,11 @@ public class StudentQuizSessionListActivity extends AppCompatActivity {
                 System.out.println("Failed to get quiz sessions "+e);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

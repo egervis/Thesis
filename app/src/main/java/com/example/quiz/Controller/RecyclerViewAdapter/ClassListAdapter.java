@@ -2,6 +2,9 @@ package com.example.quiz.Controller.RecyclerViewAdapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +48,29 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Clas
                 context.startActivity(intent);
             }
         });
+
+
+        int a = Color.parseColor("#ffff4444");//red
+        int b = Color.parseColor("#ffff8800");//orange
+        int c = Color.parseColor("#ff99cc00");//green
+        int f = Color.parseColor("#ffaa66cc");//purple
+        int g = Color.parseColor("#ffffbb33");//yellow
+        int h = Color.parseColor("#ff000000");//black
+
+        int color = h;
+        char letter = classes.get(position).getName().charAt(0);
+        if((letter>='A' && letter<='E')||(letter>='a' && letter<='e'))
+            color = a;
+        else if((letter>='F' && letter<='J')||(letter>='f' && letter<='j'))
+            color = b;
+        else if((letter>='K' && letter<='O')||(letter>='k' && letter<='o'))
+            color = c;
+        else if((letter>='P' && letter<='T')||(letter>='p' && letter<='t'))
+            color = f;
+        else if((letter>='U' && letter<='Z')||(letter>='u' && letter<='z'))
+            color = g;
+
+        holder.classSelection.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 
     @Override

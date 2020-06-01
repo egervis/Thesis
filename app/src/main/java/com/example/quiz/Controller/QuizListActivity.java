@@ -37,6 +37,7 @@ public class QuizListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         userId = getIntent().getExtras().getString("id");
+        getSupportActionBar().setTitle("Quizzes");
 
         setOnClicks();
         makeRV();

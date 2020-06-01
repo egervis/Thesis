@@ -33,9 +33,17 @@ public class ChoiceListStudentChoiceAdapter extends RecyclerView.Adapter<ChoiceL
 
     @Override
     public void onBindViewHolder(@NonNull ChoiceStudentChoiceHolder holder, int position) {
-        holder.number.setText((position+1)+".");
+        holder.number.setText("   "+(position+1)+")  ");
         holder.text.setText(choices.get(position).getChoiceText());
-        holder.correct.setText("Is Correct: "+choices.get(position).isCorrect());
+        if(choices.get(position).isCorrect())
+        {
+            holder.text.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_check_circle_green_800_24dp,0);
+        }
+        else
+        {
+            holder.text.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_cancel_red_800_24dp,0);
+        }
+
         boolean sc = false;
         for(StudentChoice s:studentChoices)
         {
@@ -43,9 +51,7 @@ public class ChoiceListStudentChoiceAdapter extends RecyclerView.Adapter<ChoiceL
                 sc = true;
         }
         if(sc)
-            holder.student.setText("Is Student's Choice: true");
-        else
-            holder.student.setText("Is Student's Choice: false");
+            holder.student.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_all_blue_800_24dp,0,0,0);
     }
 
     @Override
@@ -57,13 +63,11 @@ public class ChoiceListStudentChoiceAdapter extends RecyclerView.Adapter<ChoiceL
         public TextView number;
 
         public TextView text;
-        public TextView correct;
         public TextView student;
         public ChoiceStudentChoiceHolder(View itemView) {
             super(itemView);
             number = itemView.findViewById(R.id.choiceNumberInHolderSC);
             text = itemView.findViewById(R.id.choiceTextInHolderSC);
-            correct = itemView.findViewById(R.id.choiceIsCorrectInHolderSC);
             student = itemView.findViewById(R.id.choiceIsStudentInHolderSC);
         }
     }

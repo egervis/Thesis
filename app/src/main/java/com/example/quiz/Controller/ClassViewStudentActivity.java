@@ -39,8 +39,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ClassViewStudentActivity extends AppCompatActivity {
+    private boolean BLUETOOTH_CHECK_ON = false;//toggle off (false) for emulators without bluetooth
+
     private String userId;
     private String classId;
+    private String className;
     private BroadcastReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,11 @@ public class ClassViewStudentActivity extends AppCompatActivity {
 
         userId = getIntent().getExtras().getString("id");
         classId = getIntent().getExtras().getString("classId");
+        className = getIntent().getExtras().getString("className");
+
+        getSupportActionBar().setTitle(className);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         setOnClicks();
     }
@@ -83,7 +91,10 @@ public class ClassViewStudentActivity extends AppCompatActivity {
         takeQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                checkBluetooth();
+                if(BLUETOOTH_CHECK_ON)
+                    checkBluetooth();
+                else
+                    startQuiz();
             }
         });
     }
@@ -111,10 +122,13 @@ public class ClassViewStudentActivity extends AppCompatActivity {
                                                 quizTaken = true;
                                         }
                                         if(quizSessions.size()==0 || !quizTaken) {
+                                            long duration = quizSession.getEndTime().getTime() - quizSession.getStartTime().getTime();
+
                                             Intent intent = new Intent(ClassViewStudentActivity.this, TakeQuizActivity.class);
                                             intent.putExtra("id", userId);
                                             intent.putExtra("quizSessionId", quizSession.getId());
                                             intent.putExtra("quizId", quizSession.getQuizId());
+                                            intent.putExtra("duration", duration);
                                             startActivity(intent);
                                         }
                                         else {
@@ -279,5 +293,11 @@ public class ClassViewStudentActivity extends AppCompatActivity {
         super.onDestroy();
         if(receiver!=null)
             unregisterReceiver(receiver);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

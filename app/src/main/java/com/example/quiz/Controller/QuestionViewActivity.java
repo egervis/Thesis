@@ -36,6 +36,10 @@ public class QuestionViewActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Questions");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         questionId = getIntent().getExtras().getString("questionId");
 
         makeRV();
@@ -50,9 +54,9 @@ public class QuestionViewActivity extends AppCompatActivity {
         quizService.getQuestion(questionId, new OnSuccessListener<Question>() {
             @Override
             public void onSuccess(Question question) {
-                fillInfo(question.getText(), "Category: "+question.getCategory(), "Points: "+question.getPointsWorth());
+                fillInfo("Question: "+question.getText(), "Category: "+question.getCategory(), "Points: "+question.getPointsWorth());
 
-                recyclerViewAdapter = new ChoiceListAdapter(question.getChoices());
+                recyclerViewAdapter = new ChoiceListAdapter(question.getChoices(), getApplicationContext());
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         }, new OnFailureListener() {
@@ -71,5 +75,11 @@ public class QuestionViewActivity extends AppCompatActivity {
         textText.setText(text);
         categoryText.setText(category);
         pointsText.setText(points);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

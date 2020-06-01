@@ -46,6 +46,10 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("Quiz Results");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         studentId = getIntent().getExtras().getString("userId");
         quizId = getIntent().getExtras().getString("quizId");
         quizGrade = getIntent().getExtras().getDouble("quizGrade");
@@ -94,10 +98,23 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         TextView endTimeText = findViewById(R.id.quizEndTimeSC);
         nameText.setText(name);
         gradeText.setText("Grade: "+grade);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         dateText.setText("Date: " + formatter.format(startTime));
         formatter = new SimpleDateFormat("hh:mm aa");
         startTimeText.setText("Start Time: "+ formatter.format(startTime));
-        endTimeText.setText("End Time: "+ formatter.format(endTime));
+        long difference = endTime.getTime()-startTime.getTime();
+        long duration = difference/(60*1000);
+        if(duration<1) {
+            duration = difference / 1000;
+            endTimeText.setText("Duration: "+duration+" sec");
+        }
+        else
+            endTimeText.setText("Duration: "+duration+" min");
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

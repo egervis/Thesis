@@ -5,12 +5,14 @@
     android:id="@+id/coordinatorLayout15"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".Controller.StudentClassList">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout15"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -42,7 +44,7 @@
             android:id="@+id/noClassesStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_classes_avaliable"
+            android:text="@string/no_classes_available"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp"
             tools:visibility="gone" />
@@ -57,6 +59,8 @@
             android:id="@+id/joinClassMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:drawableLeft="@drawable/ic_add_box_black_24dp"
             android:text="@string/join_class" />
     </LinearLayout>
 
