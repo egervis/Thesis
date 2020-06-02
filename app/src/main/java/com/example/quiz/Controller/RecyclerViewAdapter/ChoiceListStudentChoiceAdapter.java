@@ -51,7 +51,7 @@ public class ChoiceListStudentChoiceAdapter extends RecyclerView.Adapter<ChoiceL
                 sc = true;
         }
         if(sc)
-            holder.student.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_all_blue_800_24dp,0,0,0);
+            holder.student.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_blue_800_24dp,0,0,0);
     }
 
     @Override
