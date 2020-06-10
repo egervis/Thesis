@@ -98,16 +98,18 @@ public class CreateQuestionActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);
     }
     private void makeQuestion() {
-        final EditText qestionText = findViewById(R.id.questionTextCreate);
+        final EditText questionText = findViewById(R.id.questionTextCreate);
         final EditText categoryText = findViewById(R.id.questionCategoryCreate);
+        final EditText subcategoryText = findViewById(R.id.questionSubcategoryCreate);
         final EditText pointsText = findViewById(R.id.questionPointsCreate);
 
         Button createQuestion = findViewById(R.id.createQuestionButton);
         createQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String question = qestionText.getText().toString();
+                String question = questionText.getText().toString();
                 String category = categoryText.getText().toString();
+                String subcategory = subcategoryText.getText().toString();
                 String points = pointsText.getText().toString();
 
                 boolean valid = true;
@@ -127,7 +129,7 @@ public class CreateQuestionActivity extends AppCompatActivity {
                 if(valid)
                 {
                     QuizService quizService = new QuizService();
-                    quizService.createQuestion(question, Double.parseDouble(points), userId, category, multiselect, choices, new OnSuccessListener<Question>() {
+                    quizService.createQuestion(question, Double.parseDouble(points), userId, category+" - "+subcategory, multiselect, choices, new OnSuccessListener<Question>() {
                         @Override
                         public void onSuccess(Question question) {
                             Toast toast = Toast.makeText(getApplicationContext(), "Question created successfully", Toast.LENGTH_SHORT);

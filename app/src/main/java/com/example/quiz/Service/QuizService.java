@@ -352,6 +352,30 @@ public class QuizService {
     }
 
     /**
+     * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator
+     * @param quizIds the user id of the creator of the quizzes
+     * @param onSuccessListener the callback if successful. Returns the list of quizzes that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getQuizzes(final ArrayList<String> quizIds,
+                           final OnSuccessListener<ArrayList<Quiz>> onSuccessListener,
+                           final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("quiz").whereIn(FieldPath.documentId(), quizIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                final ArrayList<Quiz> quizzes = new ArrayList<>();
+                for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+                {
+                    quizzes.add(SNAPSHOTPARSER_QUIZ.parseSnapshot(snap));
+                }
+                onSuccessListener.onSuccess(quizzes);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    /**
      * Gets a quiz name based on the provided quiz id
      * @param quizId the id of the quiz
      * @param onSuccessListener the callback if successful. Returns the quiz name that was retrieved.
@@ -480,6 +504,30 @@ public class QuizService {
     }
 
     /**
+     * Gets a list of quiz sessions based on the provided class id
+     * @param classId the id of the class
+     * @param onSuccessListener the callback if successful. Returns the list of quiz sessions that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getQuizSessions(final String classId,
+                                       final OnSuccessListener<ArrayList<QuizSession>> onSuccessListener,
+                                       final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("quiz_session").whereEqualTo("classId", classId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                final ArrayList<QuizSession> quizSessions = new ArrayList<>();
+                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                {
+                    quizSessions.add(SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(docSnap));
+                }
+                onSuccessListener.onSuccess(quizSessions);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    /**
      * Creates a batch of student choices with the provided information
      * @param studentId the id of the user
      * @param quizSessionId the id of the quiz session
@@ -545,6 +593,30 @@ public class QuizService {
                     {
                         lst.add(SNAPSHOTPARSER_STUDENT_CHOICE.parseSnapshot(docSnap));
                     }
+                }
+                onSuccessListener.onSuccess(lst);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    /**
+     * Gets a list of grades for the specified quiz session
+     * @param quizSessionId the id of the quiz session
+     * @param onSuccessListener the callback if successful. Returns the list of grades that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getQuizSessionGrades(final String quizSessionId,
+                                  final OnSuccessListener<ArrayList<Double>> onSuccessListener,
+                                  final OnFailureListener onFailureListener) {
+        //TODO: blank checks
+
+        db.collection("quiz_session_student").whereEqualTo("quizSessionId", quizSessionId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                ArrayList<Double> lst = new ArrayList<>(0);
+                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                {
+                    lst.add(SNAPSHOTPARSER_QUIZ_SESSION_STUDENT.parseSnapshot(docSnap).getGrade());
                 }
                 onSuccessListener.onSuccess(lst);
             }

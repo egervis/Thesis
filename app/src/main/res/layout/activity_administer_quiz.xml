@@ -48,6 +48,12 @@
             android:hint="@string/duration_of_quiz_availability_in_minutes"
             android:inputType="number" />
 
+        <Spinner
+            android:id="@+id/administerQuizSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/administerQuizListRV"
             android:layout_width="match_parent"

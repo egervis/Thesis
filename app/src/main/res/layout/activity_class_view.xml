@@ -40,11 +40,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout11">
 
+        <Spinner
+            android:id="@+id/rosterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/studentListTeacherRV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/quizSessionListMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:drawableLeft="@drawable/ic_assessment_black_24dp"
+            android:text="@string/quiz_sessions" />
 
         <Button
             android:id="@+id/administerQuizMenuButton"

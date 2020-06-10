@@ -63,4 +63,9 @@
     <string name="choice_entry">Choice Entry:</string>
     <string name="multiselect_question">Multiselect Question</string>
     <string name="correct_choice">Correct Choice</string>
+    <string name="title_activity_quiz_session_list">QuizSessionListActivity</string>
+    <string name="title_activity_quiz_session_stats">QuizSessionStatsActivity</string>
+    <string name="quiz_sessions">Quiz Sessions</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="category">Category</string>
 </resources>

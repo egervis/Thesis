@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout12"
+    android:id="@+id/coordinatorLayout19"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_gray"
-    tools:context=".Controller.StudentQuizSessionListActivity">
+    tools:context=".Controller.QuizSessionListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout12"
+        android:id="@+id/appBarLayout19"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_blue_light"
@@ -27,38 +27,32 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <Spinner
+        android:id="@+id/quizSessionSortSpinnerTeacherView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="50dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/quizSessionsTeacherViewRV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout19" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/quizSessionsTeacherViewRV"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="32dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout12">
-
-        <TextView
-            android:id="@+id/studentNameInQuizSessionList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/temp"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="24sp" />
-
-        <Spinner
-            android:id="@+id/quizSessionStudentSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/quizSessionListRV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/quizSessionSortSpinnerTeacherView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.quiz">
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -14,9 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Controller.QuizSessionStatsActivity"
+            android:label="@string/title_activity_quiz_session_stats"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Controller.QuizSessionListActivity"
+            android:label="@string/title_activity_quiz_session_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Controller.TakeQuizActivity"
             android:label="@string/title_activity_take_quiz"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Controller.JoinClassActivity"
             android:label="@string/title_activity_join_class"

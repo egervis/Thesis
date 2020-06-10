@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout12"
+    android:id="@+id/coordinatorLayout20"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_gray"
-    tools:context=".Controller.StudentQuizSessionListActivity">
+    tools:context=".Controller.QuizSessionStatsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout12"
+        android:id="@+id/appBarLayout20"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_blue_light"
@@ -38,27 +38,47 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout12">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout20">
 
         <TextView
-            android:id="@+id/studentNameInQuizSessionList"
+            android:id="@+id/quizNameStats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:text="@string/temp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
-        <Spinner
-            android:id="@+id/quizSessionStudentSpinner"
+        <TextView
+            android:id="@+id/quizDateStats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:text="@string/temp"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/quizSessionListRV"
+        <TextView
+            android:id="@+id/quizAverageStats"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:text="@string/temp"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/quizMedianStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temp"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/quizStandardDeviationStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temp"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

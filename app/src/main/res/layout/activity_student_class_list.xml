@@ -49,6 +49,12 @@
             android:textSize="24sp"
             tools:visibility="gone" />
 
+        <Spinner
+            android:id="@+id/classListStudentSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/classListStudentRV"
             android:layout_width="match_parent"

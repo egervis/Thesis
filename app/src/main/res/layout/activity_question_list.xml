@@ -49,6 +49,12 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             tools:visibility="gone" />
 
+        <Spinner
+            android:id="@+id/questionBankListSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/questionListBank"
             android:layout_width="match_parent"

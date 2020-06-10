@@ -1,11 +1,10 @@
 package com.example.quiz.Controller;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.quiz.Controller.RecyclerViewAdapter.ClassListStudentAdapter;
-import com.example.quiz.Model.Classroom;
-import com.example.quiz.Service.ClassService;
+import com.example.quiz.Controller.RecyclerViewAdapter.QuizSessionListAdapter;
+import com.example.quiz.Model.QuizSession;
+import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,9 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.quiz.R;
 
@@ -30,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class StudentClassList extends AppCompatActivity {
-    private String userId;
-    private ArrayList<Classroom> c;
+public class QuizSessionListActivity extends AppCompatActivity {
+    private String classId;
+    private ArrayList<QuizSession> sessions;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerViewAdapter;
@@ -40,61 +37,53 @@ public class StudentClassList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_class_list);
+        setContentView(R.layout.activity_quiz_session_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Classes");
+        getSupportActionBar().setTitle("Quiz Sessions");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        userId = getIntent().getExtras().getString("id");
+        classId = getIntent().getExtras().getString("classId");
 
-        joinClass();
-        getClassrooms();
+        getQuizSessions();
     }
-
-    private void getClassrooms() {
-        ClassService classService = new ClassService();
-        classService.getClasses(userId, "student", new OnSuccessListener<ArrayList<Classroom>>() {
+    private void getQuizSessions() {
+        QuizService quizService = new QuizService();
+        quizService.getQuizSessions(classId, new OnSuccessListener<ArrayList<QuizSession>>() {
             @Override
-            public void onSuccess(ArrayList<Classroom> classrooms) {
-                TextView text = findViewById(R.id.noClassesStudent);
-                if(classrooms.size() == 0)
-                    text.setVisibility(View.VISIBLE);
-                else
-                    text.setVisibility(View.GONE);
-                c = classrooms;
-
-                Collections.sort(c, new Comparator<Classroom>() {
+            public void onSuccess(ArrayList<QuizSession> quizSessions) {
+                Collections.sort(quizSessions, new Comparator<QuizSession>() {
                     @Override
-                    public int compare(Classroom o1, Classroom o2) {
-                        return o1.getName().compareTo(o2.getName());
+                    public int compare(QuizSession o1, QuizSession o2) {
+                        return o2.getStartTime().compareTo(o1.getStartTime());
                     }
                 });
-
+                sessions = quizSessions;
                 makeRV();
                 makeSpinner();
             }
         }, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                System.out.println("Failed to get classes "+ e);
+                System.out.println("Failed to get quiz sessions "+ e);
             }
         });
     }
-
     private void makeRV() {
-        recyclerView = findViewById(R.id.classListStudentRV);
+        recyclerView = findViewById(R.id.quizSessionsTeacherViewRV);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new ClassListStudentAdapter(c, StudentClassList.this, userId);
+        recyclerViewAdapter = new QuizSessionListAdapter(sessions, QuizSessionListActivity.this);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private void makeSpinner() {
-        Spinner spinner = findViewById(R.id.classListStudentSpinner);
+        Spinner spinner = findViewById(R.id.quizSessionSortSpinnerTeacherView);
         spinner.setVisibility(View.VISIBLE);
-        final String option1 = "Sort By: Name Ascending";
-        final String option2 = "Sort By: Name Descending";
+        final String option1 = "Sort By: Date Descending";
+        final String option2 = "Sort By: Date Ascending";
         ArrayList<String> options = new ArrayList<>();
         options.add(option1);
         options.add(option2);
@@ -105,19 +94,19 @@ public class StudentClassList extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(parent.getItemAtPosition(position).toString().equals(option1))
                 {
-                    Collections.sort(c, new Comparator<Classroom>() {
+                    Collections.sort(sessions, new Comparator<QuizSession>() {
                         @Override
-                        public int compare(Classroom o1, Classroom o2) {
-                            return o1.getName().compareTo(o2.getName());
+                        public int compare(QuizSession o1, QuizSession o2) {
+                            return o2.getStartTime().compareTo(o1.getStartTime());
                         }
                     });
                 }
                 else if(parent.getItemAtPosition(position).toString().equals(option2))
                 {
-                    Collections.sort(c, new Comparator<Classroom>() {
+                    Collections.sort(sessions, new Comparator<QuizSession>() {
                         @Override
-                        public int compare(Classroom o1, Classroom o2) {
-                            return o2.getName().compareTo(o1.getName());
+                        public int compare(QuizSession o1, QuizSession o2) {
+                            return o1.getStartTime().compareTo(o2.getStartTime());
                         }
                     });
                 }
@@ -131,15 +120,9 @@ public class StudentClassList extends AppCompatActivity {
         });
     }
 
-    private void joinClass() {
-        Button button = findViewById(R.id.joinClassMenuButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StudentClassList.this, JoinClassActivity.class);
-                intent.putExtra("id", userId);
-                startActivity(intent);
-            }
-        });
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

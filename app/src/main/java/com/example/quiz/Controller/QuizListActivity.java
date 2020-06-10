@@ -16,15 +16,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class QuizListActivity extends AppCompatActivity {
     private String userId;
+    private ArrayList<Quiz> q;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerViewAdapter;
@@ -40,14 +46,10 @@ public class QuizListActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Quizzes");
 
         setOnClicks();
-        makeRV();
+        getQuizzes();
     }
 
-    private void makeRV() {
-        recyclerView = findViewById(R.id.quizListTeacherRV);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
+    private void getQuizzes() {
         QuizService quizService = new QuizService();
         quizService.getQuizzes(userId, new OnSuccessListener<ArrayList<Quiz>>() {
             @Override
@@ -57,13 +59,103 @@ public class QuizListActivity extends AppCompatActivity {
                     text.setVisibility(View.VISIBLE);
                 else
                     text.setVisibility(View.GONE);
-                recyclerViewAdapter = new QuizListAdapter(quizzes, QuizListActivity.this);
-                recyclerView.setAdapter(recyclerViewAdapter);
+                q = quizzes;
+
+                Collections.sort(q, new Comparator<Quiz>() {
+                    @Override
+                    public int compare(Quiz o1, Quiz o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
+
+                Collections.sort(q, new Comparator<Quiz>() {
+                    @Override
+                    public int compare(Quiz o1, Quiz o2) {
+                        return o1.getCategory().compareTo(o2.getCategory());
+                    }
+                });
+
+                makeRV();
+                makeSpinner();
             }
         }, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 System.out.println("Failed to get quizzes "+ e);
+            }
+        });
+    }
+
+    private void makeRV() {
+        recyclerView = findViewById(R.id.quizListTeacherRV);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewAdapter = new QuizListAdapter(q, QuizListActivity.this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void makeSpinner() {
+        Spinner spinner = findViewById(R.id.quizBankListSpinner);
+        spinner.setVisibility(View.VISIBLE);
+        final String option1 = "Sort By: Category Ascending";
+        final String option2 = "Sort By: Category Descending";
+        final String option3 = "Sort By: Name";
+        ArrayList<String> options = new ArrayList<>();
+        options.add(option1);
+        options.add(option2);
+        options.add(option3);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).toString().equals(option1))
+                {
+                    Collections.sort(q, new Comparator<Quiz>() {
+                        @Override
+                        public int compare(Quiz o1, Quiz o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    });
+
+                    Collections.sort(q, new Comparator<Quiz>() {
+                        @Override
+                        public int compare(Quiz o1, Quiz o2) {
+                            return o1.getCategory().compareTo(o2.getCategory());
+                        }
+                    });
+                }
+                else if(parent.getItemAtPosition(position).toString().equals(option2))
+                {
+                    Collections.sort(q, new Comparator<Quiz>() {
+                        @Override
+                        public int compare(Quiz o1, Quiz o2) {
+                            return o2.getName().compareTo(o1.getName());
+                        }
+                    });
+
+                    Collections.sort(q, new Comparator<Quiz>() {
+                        @Override
+                        public int compare(Quiz o1, Quiz o2) {
+                            return o2.getCategory().compareTo(o1.getCategory());
+                        }
+                    });
+                }
+                else if(parent.getItemAtPosition(position).toString().equals(option3))
+                {
+                    Collections.sort(q, new Comparator<Quiz>() {
+                        @Override
+                        public int compare(Quiz o1, Quiz o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    });
+                }
+                makeRV();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -106,11 +198,5 @@ public class QuizListActivity extends AppCompatActivity {
                 //do nothing
             }
         });
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        makeRV();
     }
 }

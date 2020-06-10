@@ -11,25 +11,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.quiz.Controller.StudentChoiceViewActivity;
+import com.example.quiz.Controller.QuizSessionStatsActivity;
 import com.example.quiz.Model.QuizSession;
-import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.R;
 import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class QuizSessionListAdapter extends RecyclerView.Adapter<QuizSessionListAdapter.QuizSessionHolder> {
-    private ArrayList<QuizSessionStudent> quizSessions;
+    private ArrayList<QuizSession> quizSessions;
     private Context context;
-    private String userId;
 
-    public QuizSessionListAdapter(ArrayList<QuizSessionStudent> quizSessions, Context context, String userId) {
+    public QuizSessionListAdapter(ArrayList<QuizSession> quizSessions, Context context) {
         this.quizSessions = quizSessions;
         this.context = context;
-        this.userId = userId;
     }
 
     @NonNull
@@ -42,42 +40,29 @@ public class QuizSessionListAdapter extends RecyclerView.Adapter<QuizSessionList
     @Override
     public void onBindViewHolder(@NonNull final QuizSessionHolder holder, final int position) {
         final QuizService quizService = new QuizService();
-        quizService.getQuizSession(quizSessions.get(position).getQuizSessionId(), new OnSuccessListener<QuizSession>() {
+        quizService.getQuizName(quizSessions.get(position).getQuizId(), new OnSuccessListener<String>() {
             @Override
-            public void onSuccess(final QuizSession quizSession) {
-                quizService.getQuizName(quizSession.getQuizId(), new OnSuccessListener<String>() {
+            public void onSuccess(final String s) {
+                holder.name.setText(s);
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                holder.date.setText("Administered on "+formatter.format(quizSessions.get(position).getStartTime()));
+                holder.info.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onSuccess(String s) {
-                        holder.name.setText(s);
-                        holder.grade.setText("Grade: "+quizSessions.get(position).getGrade());
-                        holder.info.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(context, StudentChoiceViewActivity.class);
-                                intent.putExtra("userId", userId);
-                                intent.putExtra("quizId", quizSession.getQuizId());
-                                intent.putExtra("quizGrade", quizSessions.get(position).getGrade());
-                                intent.putExtra("quizSessionId", quizSession.getId());
-                                intent.putExtra("startTime", quizSessions.get(position).getStartTime());
-                                intent.putExtra("endTime", quizSessions.get(position).getEndTime());
-                                context.startActivity(intent);
-                            }
-                        });
-                    }
-                }, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Failed to get quiz name "+e);
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, QuizSessionStatsActivity.class);
+                        intent.putExtra("quizSessionId", quizSessions.get(position).getId());
+                        intent.putExtra("quizName", s);
+                        intent.putExtra("quizSessionStartTime", quizSessions.get(position).getStartTime());
+                        context.startActivity(intent);
                     }
                 });
             }
-        }, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("Failed to get quiz session "+e);
-            }
-        });
-
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println("Failed to get quiz name "+e);
+                }
+            });
     }
 
     @Override
@@ -87,13 +72,14 @@ public class QuizSessionListAdapter extends RecyclerView.Adapter<QuizSessionList
 
     public class QuizSessionHolder extends RecyclerView.ViewHolder {
         public TextView name;
-        public TextView grade;
+        public TextView date;
         public LinearLayout info;
         public QuizSessionHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.quizNameSessionHolder);
-            grade = itemView.findViewById(R.id.quizGradeSessionHolder);
-            info = itemView.findViewById(R.id.quizSessionInfoHolder);
+            name = itemView.findViewById(R.id.quizSessionName);
+            date = itemView.findViewById(R.id.quizSessionDate);
+            info = itemView.findViewById(R.id.quizSessionInfo);
         }
     }
+
 }
