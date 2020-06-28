@@ -55,6 +55,41 @@
             android:layout_height="wrap_content"
             android:visibility="invisible" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/searchTextInputQuestionList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:ems="10"
+                android:hint="@android:string/search_go"
+                android:inputType="textPersonName"
+                android:visibility="invisible" />
+
+            <ImageButton
+                android:id="@+id/clearSearchButtonQuestionList"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/clear_search_button"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_clear_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/searchButtonQuestionList"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/search_button"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_search_black_24dp" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/questionListBank"
             android:layout_width="match_parent"

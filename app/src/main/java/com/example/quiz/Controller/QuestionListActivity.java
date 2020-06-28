@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -79,6 +81,7 @@ public class QuestionListActivity extends AppCompatActivity {
 
                 makeRV();
                 makeSpinner();
+                enableSearch();
             }
         }, new OnFailureListener() {
             @Override
@@ -151,6 +154,36 @@ public class QuestionListActivity extends AppCompatActivity {
         });
     }
 
+    private void makeRV(ArrayList<Question> questionList) {
+        recyclerView = findViewById(R.id.questionListBank);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewAdapter = new QuestionListAdapter(questionList, QuestionListActivity.this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void enableSearch() {
+        findViewById(R.id.searchTextInputQuestionList).setVisibility(View.VISIBLE);
+        findViewById(R.id.searchButtonQuestionList).setVisibility(View.VISIBLE);
+        findViewById(R.id.clearSearchButtonQuestionList).setVisibility(View.VISIBLE);
+
+    }
+
+    private void search(String text) {
+        ArrayList<Integer> indexList = new ArrayList<>();
+        for(int i=0; i<q.size(); i++)
+            if(q.get(i).getText().toLowerCase().contains(text.toLowerCase()))
+                indexList.add(i);
+        ArrayList<Question> questionList = new ArrayList<>();
+        for(Integer i:indexList)
+            questionList.add(q.get(i));
+        makeRV(questionList);
+    }
+
+    private void clearSearch() {
+        makeRV();
+    }
+
     private void setOnClicks() {
         Button createClass = findViewById(R.id.createQuestionMenuButton);
         createClass.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +220,25 @@ public class QuestionListActivity extends AppCompatActivity {
                 Intent intent = new Intent(QuestionListActivity.this, QuizListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
+            }
+        });
+
+        ImageButton clearSearch = findViewById(R.id.clearSearchButtonQuestionList);
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputQuestionList);
+                searchText.setText("");
+                clearSearch();
+            }
+        });
+
+        final ImageButton search = findViewById(R.id.searchButtonQuestionList);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputQuestionList);
+                search(searchText.getText().toString());
             }
         });
     }

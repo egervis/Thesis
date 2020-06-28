@@ -68,4 +68,6 @@
     <string name="quiz_sessions">Quiz Sessions</string>
     <string name="subcategory">Subcategory</string>
     <string name="category">Category</string>
+    <string name="search_button">search button</string>
+    <string name="clear_search_button">clear search button</string>
 </resources>

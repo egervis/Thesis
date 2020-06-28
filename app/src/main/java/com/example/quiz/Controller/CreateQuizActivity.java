@@ -1,5 +1,6 @@
 package com.example.quiz.Controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuestionSelectAdapter;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         userId = getIntent().getExtras().getString("id");
 
         getQuestions();
+        setOnClicks();
     }
 
     private void getQuestions() {
@@ -70,6 +73,7 @@ public class CreateQuizActivity extends AppCompatActivity {
                     q = questions;
                     makeRV();
                     makeSpinner();
+                    enableSearch();
                 }
             }
         }, new OnFailureListener() {
@@ -140,6 +144,57 @@ public class CreateQuizActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+    }
+
+    private void makeRV(ArrayList<Question> questionList) {
+        recyclerView = findViewById(R.id.listOfCreatedQuestions);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewAdapter = new QuestionSelectAdapter(questionList, CreateQuizActivity.this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void enableSearch() {
+        findViewById(R.id.searchTextInputCreateQuiz).setVisibility(View.VISIBLE);
+        findViewById(R.id.searchButtonCreateQuiz).setVisibility(View.VISIBLE);
+        findViewById(R.id.clearSearchButtonCreateQuiz).setVisibility(View.VISIBLE);
+
+    }
+
+    private void search(String text) {
+        ArrayList<Integer> indexList = new ArrayList<>();
+        for(int i=0; i<q.size(); i++)
+            if(q.get(i).getText().toLowerCase().contains(text.toLowerCase()))
+                indexList.add(i);
+        ArrayList<Question> questionList = new ArrayList<>();
+        for(Integer i:indexList)
+            questionList.add(q.get(i));
+        makeRV(questionList);
+    }
+
+    private void clearSearch() {
+        makeRV();
+    }
+
+    private void setOnClicks() {
+        ImageButton clearSearch = findViewById(R.id.clearSearchButtonCreateQuiz);
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputCreateQuiz);
+                searchText.setText("");
+                clearSearch();
+            }
+        });
+
+        final ImageButton search = findViewById(R.id.searchButtonCreateQuiz);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputCreateQuiz);
+                search(searchText.getText().toString());
             }
         });
     }

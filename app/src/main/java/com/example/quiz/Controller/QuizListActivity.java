@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -77,6 +79,7 @@ public class QuizListActivity extends AppCompatActivity {
 
                 makeRV();
                 makeSpinner();
+                enableSearch();
             }
         }, new OnFailureListener() {
             @Override
@@ -160,6 +163,36 @@ public class QuizListActivity extends AppCompatActivity {
         });
     }
 
+    private void makeRV(ArrayList<Quiz> questionList) {
+        recyclerView = findViewById(R.id.quizListTeacherRV);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewAdapter = new QuizListAdapter(questionList, QuizListActivity.this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void enableSearch() {
+        findViewById(R.id.searchTextInputQuizList).setVisibility(View.VISIBLE);
+        findViewById(R.id.searchButtonQuizList).setVisibility(View.VISIBLE);
+        findViewById(R.id.clearSearchButtonQuizList).setVisibility(View.VISIBLE);
+
+    }
+
+    private void search(String text) {
+        ArrayList<Integer> indexList = new ArrayList<>();
+        for(int i=0; i<q.size(); i++)
+            if(q.get(i).getName().toLowerCase().contains(text.toLowerCase()))
+                indexList.add(i);
+        ArrayList<Quiz> quizList = new ArrayList<>();
+        for(Integer i:indexList)
+            quizList.add(q.get(i));
+        makeRV(quizList);
+    }
+
+    private void clearSearch() {
+        makeRV();
+    }
+
     private void setOnClicks() {
         Button createClass = findViewById(R.id.createQuizMenuButton);
         createClass.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +229,25 @@ public class QuizListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //do nothing
+            }
+        });
+
+        ImageButton clearSearch = findViewById(R.id.clearSearchButtonQuizList);
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputQuizList);
+                searchText.setText("");
+                clearSearch();
+            }
+        });
+
+        final ImageButton search = findViewById(R.id.searchButtonQuizList);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = findViewById(R.id.searchTextInputQuizList);
+                search(searchText.getText().toString());
             }
         });
     }
