@@ -8,8 +8,6 @@ import com.example.quiz.Model.Question;
 import com.example.quiz.Service.QuizService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +45,8 @@ public class QuestionListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getSupportActionBar().setTitle("Questions");
 
         setOnClicks();
@@ -199,7 +199,7 @@ public class QuestionListActivity extends AppCompatActivity {
         classMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QuestionListActivity.this, TeacherClassList.class);
+                Intent intent = new Intent(QuestionListActivity.this, TeacherClassListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }

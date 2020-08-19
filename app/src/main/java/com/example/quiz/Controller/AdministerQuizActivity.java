@@ -1,5 +1,8 @@
 package com.example.quiz.Controller;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuizSelectAdapter;
@@ -21,6 +24,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,10 +49,22 @@ public class AdministerQuizActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         classId = getIntent().getExtras().getString("classId");
 
         getQuizzes();
+        askWiFiPermissions();
+    }
+
+    private void askWiFiPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            //    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+
     }
 
     private void getQuizzes() {
@@ -89,7 +105,7 @@ public class AdministerQuizActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         final AdministerQuizActivity activity = this;
         EditText editText = findViewById(R.id.durationInputAQ);
-        recyclerViewAdapter = new QuizSelectAdapter(q, AdministerQuizActivity.this, classId, editText, activity);
+        recyclerViewAdapter = new QuizSelectAdapter(q, AdministerQuizActivity.this, classId, editText, activity, userId);
         recyclerView.setAdapter(recyclerViewAdapter);
 
     }

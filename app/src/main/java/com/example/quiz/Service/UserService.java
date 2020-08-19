@@ -71,6 +71,37 @@ public class UserService {
     }
 
     /**
+     * Creates a user with the provided information
+     * @param id the id of the user
+     * @param firstName the first name of the user
+     * @param lastName the last name of the user
+     * @param email the email of the user
+     * @param onSuccessListener the callback if successful. Returns the user that was created.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void createUser(final String id, final String firstName, final String lastName, final String email,
+                           final OnSuccessListener<Void> onSuccessListener,
+                           final OnFailureListener onFailureListener) {
+        String f = firstName;
+        String l = lastName;
+        String e = email;
+        if(f.equals(""))
+            f = null;
+        if(l.equals(""))
+            l = null;
+        if(e.equals(""))
+            e = null;
+
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", f);
+        userMap.put("lastName", l);
+        userMap.put("email", e);
+
+        db.collection("user").document(id).set(userMap).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+    }
+
+    /**
      * Gets a user based on the provided user id
      * @param userId the id of the user
      * @param onSuccessListener the callback if successful. Returns the user that was retrieved.
@@ -86,8 +117,12 @@ public class UserService {
         db.collection("user").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User user = SNAPSHOTPARSER_USER.parseSnapshot(documentSnapshot);
-                onSuccessListener.onSuccess(user);
+                if(documentSnapshot.exists()) {
+                    User user = SNAPSHOTPARSER_USER.parseSnapshot(documentSnapshot);
+                    onSuccessListener.onSuccess(user);
+                }
+                else
+                    onSuccessListener.onSuccess(null);
             }
         }).addOnFailureListener(onFailureListener);
     }

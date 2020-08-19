@@ -8,8 +8,6 @@ import com.example.quiz.Model.Classroom;
 import com.example.quiz.Service.ClassService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,12 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class TeacherClassList extends AppCompatActivity {
+public class TeacherClassListActivity extends AppCompatActivity {
     private String userId;
     private ArrayList<Classroom> c;
 
@@ -44,7 +43,8 @@ public class TeacherClassList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getSupportActionBar().setTitle("Classes");
 
         setOnClicks();
@@ -85,7 +85,7 @@ public class TeacherClassList extends AppCompatActivity {
         recyclerView = findViewById(R.id.classesTeacherRV);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new ClassListAdapter(c, TeacherClassList.this, userId);
+        recyclerViewAdapter = new ClassListAdapter(c, TeacherClassListActivity.this, userId);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
@@ -135,7 +135,7 @@ public class TeacherClassList extends AppCompatActivity {
         createClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, CreateClassActivity.class);
+                Intent intent = new Intent(TeacherClassListActivity.this, CreateClassActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }
@@ -153,7 +153,7 @@ public class TeacherClassList extends AppCompatActivity {
         questionMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, QuestionListActivity.class);
+                Intent intent = new Intent(TeacherClassListActivity.this, QuestionListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }
@@ -163,7 +163,7 @@ public class TeacherClassList extends AppCompatActivity {
         quizMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeacherClassList.this, QuizListActivity.class);
+                Intent intent = new Intent(TeacherClassListActivity.this, QuizListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }

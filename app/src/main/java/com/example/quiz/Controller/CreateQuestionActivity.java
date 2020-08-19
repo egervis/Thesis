@@ -25,6 +25,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -48,7 +49,8 @@ public class CreateQuestionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         choices = new ArrayList<>(0);
         checkSwitches();
         addChoice();

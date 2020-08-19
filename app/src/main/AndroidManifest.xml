@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +20,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Controller.BroadcastClassTeacherActivity"
+            android:label="@string/title_activity_broadcast_class_teacher"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Controller.BroadcastTeacherActivity"
+            android:label="@string/title_activity_broadcast_teacher"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Controller.QuizSessionStatsActivity"
             android:label="@string/title_activity_quiz_session_stats"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Controller.QuizSessionListActivity"
             android:label="@string/title_activity_quiz_session_list"
@@ -35,7 +48,7 @@
             android:label="@string/title_activity_class_view_student"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Controller.StudentClassList"
+            android:name=".Controller.StudentClassListActivity"
             android:label="@string/title_activity_student_class_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -83,7 +96,7 @@
             android:label="@string/title_activity_create_class"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Controller.TeacherClassList"
+            android:name=".Controller.TeacherClassListActivity"
             android:label="@string/title_activity_teacher_class_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

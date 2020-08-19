@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +52,8 @@ public class CreateQuizActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         getQuestions();
         setOnClicks();

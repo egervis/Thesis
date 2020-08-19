@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,8 @@ public class QuizListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getSupportActionBar().setTitle("Quizzes");
 
         setOnClicks();
@@ -208,7 +210,7 @@ public class QuizListActivity extends AppCompatActivity {
         classMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QuizListActivity.this, TeacherClassList.class);
+                Intent intent = new Intent(QuizListActivity.this, TeacherClassListActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }

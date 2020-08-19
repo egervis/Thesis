@@ -18,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,11 +52,13 @@ public class ClassViewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         classId = getIntent().getExtras().getString("classId");
 
         administerQuiz();
         quizSessionList();
+        authenticateStudents();
         getClassroom();
     }
     private void getClassroom() {
@@ -152,6 +157,43 @@ public class ClassViewActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void authenticateStudents() {
+        Button button = findViewById(R.id.authenticateTeacherButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), BroadcastTeacherActivity.class);
+                intent.putExtra("id", userId);
+                intent.putExtra("classId", classId);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void addStudents() {
+        Intent intent = new Intent(getApplicationContext(), BroadcastClassTeacherActivity.class);
+        intent.putExtra("classId", classId);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_students, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_add_students:
+                addStudents();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

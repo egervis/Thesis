@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quiz.Controller.AdministerQuizActivity;
+import com.example.quiz.Controller.BroadcastTeacherActivity;
 import com.example.quiz.Controller.QuizViewActivity;
 import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.QuizSession;
@@ -32,13 +33,15 @@ public class QuizSelectAdapter extends RecyclerView.Adapter<QuizSelectAdapter.Qu
     private String classId;
     private EditText editText;
     private AdministerQuizActivity activity;
+    private String userId;
 
-    public QuizSelectAdapter(ArrayList<Quiz> quizzes, Context context, String classId, EditText editText, AdministerQuizActivity activity) {
+    public QuizSelectAdapter(ArrayList<Quiz> quizzes, Context context, String classId, EditText editText, AdministerQuizActivity activity, String userId) {
         this.quizzes = quizzes;
         this.context = context;
         this.classId = classId;
         this.editText = editText;
         this.activity = activity;
+        this.userId = userId;
     }
 
     @NonNull
@@ -90,7 +93,11 @@ public class QuizSelectAdapter extends RecyclerView.Adapter<QuizSelectAdapter.Qu
                                 public void onSuccess(Void aVoid) {
                                     Toast toast = Toast.makeText(context, "Quiz Administered", Toast.LENGTH_SHORT);
                                     toast.show();
-                                    activity.finish();
+//                                    Intent intent = new Intent(context, BroadcastTeacherActivity.class);
+//                                    intent.putExtra("id", userId);
+//                                    intent.putExtra("classId", classId);
+//                                    context.startActivity(intent);
+//                                    activity.finish();
                                 }
                             }, new OnFailureListener() {
                                 @Override

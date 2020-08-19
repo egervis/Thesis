@@ -70,4 +70,8 @@
     <string name="category">Category</string>
     <string name="search_button">search button</string>
     <string name="clear_search_button">clear search button</string>
+    <string name="title_activity_broadcast_teacher">BroadcastTeacherActivity</string>
+    <string name="logout">Logout</string>
+    <string name="title_activity_broadcast_class_teacher">BroadcastClassTeacherActivity</string>
+    <string name="add_students">Add Students</string>
 </resources>

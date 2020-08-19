@@ -8,8 +8,6 @@ import com.example.quiz.Model.Classroom;
 import com.example.quiz.Service.ClassService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,12 +23,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class StudentClassList extends AppCompatActivity {
+public class StudentClassListActivity extends AppCompatActivity {
     private String userId;
     private ArrayList<Classroom> c;
 
@@ -46,7 +46,8 @@ public class StudentClassList extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Classes");
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         joinClass();
         getClassrooms();
@@ -86,7 +87,7 @@ public class StudentClassList extends AppCompatActivity {
         recyclerView = findViewById(R.id.classListStudentRV);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new ClassListStudentAdapter(c, StudentClassList.this, userId);
+        recyclerViewAdapter = new ClassListStudentAdapter(c, StudentClassListActivity.this, userId);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
@@ -136,7 +137,7 @@ public class StudentClassList extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StudentClassList.this, JoinClassActivity.class);
+                Intent intent = new Intent(StudentClassListActivity.this, JoinClassActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
             }

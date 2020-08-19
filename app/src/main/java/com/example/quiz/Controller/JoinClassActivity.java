@@ -1,7 +1,10 @@
 package com.example.quiz.Controller;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import com.example.quiz.Controller.ConnectionManager.NearbyConnectionsManagerClassroom;
 import com.example.quiz.Service.ClassService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -11,16 +14,22 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.concurrent.Callable;
 
 public class JoinClassActivity extends AppCompatActivity {
     private String userId;
+    private NearbyConnectionsManagerClassroom nearby;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,43 +38,43 @@ public class JoinClassActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userId = getIntent().getExtras().getString("id");
+        getSupportActionBar().setTitle("Join Class");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         joinClass();
     }
+
     private void joinClass() {
-        Button join = findViewById(R.id.joinClassButton);
+        final Button join = findViewById(R.id.joinClassButton);
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText text = findViewById(R.id.idClassJoinInput);
-                boolean valid = true;
+                nearby = new NearbyConnectionsManagerClassroom(JoinClassActivity.this, new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        finish();
+                        return null;
+                    }
+                });
+                nearby.start();
+                TextView textView = findViewById(R.id.joinClassSearchingTextView);
+                textView.setVisibility(View.VISIBLE);
 
-                if(text.getText().toString().equals(""))
-                    valid = false;
-
-                if(valid)
-                {
-                    ClassService classService = new ClassService();
-                    classService.addUserToClass(text.getText().toString(), userId, "student", new OnSuccessListener<String>() {
-                        @Override
-                        public void onSuccess(String s) {
-                            Toast toast = Toast.makeText(getApplicationContext(), "Added to class", Toast.LENGTH_SHORT);
-                            toast.show();
-                            finish();
-                        }
-                    }, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            System.out.println("Failed to join class "+ e);
-                        }
-                    });
-                }
-                else
-                {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Invalid or empty inputs", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                Drawable drawable = join.getBackground();
+                drawable = DrawableCompat.wrap(drawable);
+                DrawableCompat.setTint(drawable, Color.parseColor("#AAAAAA"));
+                join.setBackground(drawable);
+                join.setClickable(false);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

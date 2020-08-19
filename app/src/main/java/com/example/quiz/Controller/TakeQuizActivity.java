@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,7 +52,8 @@ public class TakeQuizActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Quiz");
 
-        userId = getIntent().getExtras().getString("id");
+        //userId = getIntent().getExtras().getString("id");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         quizSessionId = getIntent().getExtras().getString("quizSessionId");
         quizId = getIntent().getExtras().getString("quizId");
         duration = getIntent().getExtras().getLong("duration");
@@ -101,7 +103,7 @@ public class TakeQuizActivity extends AppCompatActivity {
         if(valid) {
             QuizService quizService = new QuizService();
             Calendar calendar = Calendar.getInstance();
-            quizService.recordStudentChoices(userId, quizSessionId, quiz.computeGrade(), startTime, calendar.getTime(), a.getStudentChoices(), new OnSuccessListener<Void>() {
+            quizService.recordStudentChoices(userId, quizSessionId, quiz.computeGrade(a.getStudentChoices()), startTime, calendar.getTime(), a.getStudentChoices(), new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Quiz submitted.", Toast.LENGTH_SHORT);

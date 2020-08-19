@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -214,6 +215,66 @@ public class ClassService {
                         onSuccessListener.onSuccess(classes);
                     }
                 }).addOnFailureListener(onFailureListener);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void getClassCode(final String classId,
+                             final OnSuccessListener<String> onSuccessListener,
+                             final OnFailureListener onFailureListener) {
+        db.collection("class_code").whereEqualTo("classId", classId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                String s = "";
+                if(queryDocumentSnapshots.size()!=0) {
+                    for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
+                        //Date date = snap.getDate("timestamp");
+                        String code = snap.getString("code");
+                        s = code;
+                        //s = s + "~" + date.toString();
+                        break;
+                    }
+                }
+                onSuccessListener.onSuccess(s);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    public void setClassCode(final String classId, final Date timestamp, final String code,
+                             final OnSuccessListener<Boolean> onSuccessListener,
+                             final OnFailureListener onFailureListener) {
+
+        db.collection("class_code").whereEqualTo("classId", classId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                String id = "";
+                if(queryDocumentSnapshots.size()!=0) {
+                    for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
+                        id = snap.getId();
+                        break;
+                    }
+                }
+                Map<String, Object> classCodeMap = new HashMap<>();
+                classCodeMap.put("classId", classId);
+                classCodeMap.put("timestamp", timestamp);
+                classCodeMap.put("code", code);
+                if(id.equals(""))
+                {
+                    db.collection("class_code").add(classCodeMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            onSuccessListener.onSuccess(true);
+                        }
+                    }).addOnFailureListener(onFailureListener);
+                }
+                else {
+                    db.collection("class_code").document(id).update(classCodeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            onSuccessListener.onSuccess(true);
+                        }
+                    }).addOnFailureListener(onFailureListener);
+                }
             }
         }).addOnFailureListener(onFailureListener);
     }

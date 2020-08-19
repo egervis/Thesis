@@ -52,9 +52,41 @@
             android:id="@+id/takeQuizButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@android:color/darker_gray"
+            android:clickable="false"
             android:drawableLeft="@drawable/ic_description_black_24dp"
             android:text="@string/take_quiz" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/authenticateStudentButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_check_black_24dp"
+            android:text="Authenticate" />
+
+        <TextView
+            android:id="@+id/authenticatedTextViewStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Not Authenticated"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/warningTextViewStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WARNING: Closing or exiting app will void token"
+            android:textColor="@color/fui_bgEmail"
+            android:visibility="gone" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
