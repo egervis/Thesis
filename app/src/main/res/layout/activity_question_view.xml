@@ -20,8 +20,8 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -45,7 +45,6 @@
             android:id="@+id/questionTextInView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/temp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
@@ -54,7 +53,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/temp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
@@ -64,7 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/temp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 

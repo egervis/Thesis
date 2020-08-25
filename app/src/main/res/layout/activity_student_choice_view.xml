@@ -12,7 +12,7 @@
         android:id="@+id/appBarLayout13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_light"
+        android:background="@color/light_gray"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +20,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_light"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_gray"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -48,7 +48,6 @@
                 android:id="@+id/quizNameSC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/temp"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 
@@ -56,7 +55,6 @@
                 android:id="@+id/quizGradeSC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/temp"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 
@@ -64,7 +62,6 @@
                 android:id="@+id/quizDateSC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/temp"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 
@@ -72,7 +69,6 @@
                 android:id="@+id/quizStartTimeSC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/temp"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 
@@ -80,7 +76,6 @@
                 android:id="@+id/quizEndTimeSC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/temp"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 

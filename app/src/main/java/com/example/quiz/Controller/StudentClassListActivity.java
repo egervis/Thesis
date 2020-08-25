@@ -143,4 +143,10 @@ public class StudentClassListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getClassrooms();
+    }
 }

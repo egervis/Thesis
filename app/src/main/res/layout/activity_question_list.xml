@@ -41,14 +41,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout5">
 
-        <TextView
-            android:id="@+id/noQuestionsTeacher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_questions_available"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            tools:visibility="gone" />
-
         <Spinner
             android:id="@+id/questionBankListSpinner"
             android:layout_width="match_parent"
@@ -89,6 +81,14 @@
                 app:srcCompat="@drawable/ic_search_black_24dp" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/noQuestionsTeacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_questions_available"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/questionListBank"

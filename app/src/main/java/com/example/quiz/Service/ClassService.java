@@ -7,6 +7,8 @@ import com.example.quiz.Model.User;
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -18,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClassService {
@@ -189,28 +192,32 @@ public class ClassService {
      * @param onFailureListener the callback if there was a failure.
      */
     public void  getClasses(final String userId, final String role,
-                                   final OnSuccessListener<ArrayList<Classroom>> onSuccessListener,
-                                   final OnFailureListener onFailureListener) {
+                            final OnSuccessListener<ArrayList<Classroom>> onSuccessListener,
+                            final OnFailureListener onFailureListener) {
         //TODO: role/blank checks
 
         db.collection("user_class").whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                ArrayList<String> classIds = new ArrayList<>();
+                ArrayList<Task<QuerySnapshot>> tasks = new ArrayList<>();
                 for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
                 {
-                    if(docSnap.getString("role").equals(role))
-                        classIds.add(docSnap.getString("classId"));
+                    if(docSnap.getString("role").equals(role)) {
+                        Task<QuerySnapshot> query = db.collection("class").whereEqualTo(FieldPath.documentId(), docSnap.getString("classId")).get();
+                        tasks.add(query);
+                    }
                 }
-                if(classIds.size() == 0)
-                    classIds.add("null");
-                db.collection("class").whereIn(FieldPath.documentId(), classIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    public void onSuccess(List<Object> objects) {
                         ArrayList<Classroom> classes = new ArrayList<>();
-                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+                        for(Object doc:objects)
                         {
-                            classes.add(SNAPSHOTPARSER_CLASS.parseSnapshot(snap));
+                            QuerySnapshot docSnap = (QuerySnapshot) doc;
+                            if(docSnap.getDocuments().size()!=0) {
+                                Classroom classroom = SNAPSHOTPARSER_CLASS.parseSnapshot(docSnap.getDocuments().get(0));
+                                classes.add(classroom);
+                            }
                         }
                         onSuccessListener.onSuccess(classes);
                     }
@@ -218,6 +225,44 @@ public class ClassService {
             }
         }).addOnFailureListener(onFailureListener);
     }
+
+//    /**
+//     * Gets a list of classes WITHOUT (teachers and students are null) its users based on the provided user id and role of user
+//     * @param userId the user id
+//     * @param role the role of the user
+//     * @param onSuccessListener the callback if successful. Returns the list of classes (classrooms) that was retrieved.
+//     * @param onFailureListener the callback if there was a failure.
+//     */
+//    public void  getClasses(final String userId, final String role,
+//                                   final OnSuccessListener<ArrayList<Classroom>> onSuccessListener,
+//                                   final OnFailureListener onFailureListener) {
+//        //TODO: role/blank checks
+//
+//        db.collection("user_class").whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                ArrayList<String> classIds = new ArrayList<>();
+//                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+//                {
+//                    if(docSnap.getString("role").equals(role))
+//                        classIds.add(docSnap.getString("classId"));
+//                }
+//                if(classIds.size() == 0)
+//                    classIds.add("null");
+//                db.collection("class").whereIn(FieldPath.documentId(), classIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        ArrayList<Classroom> classes = new ArrayList<>();
+//                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+//                        {
+//                            classes.add(SNAPSHOTPARSER_CLASS.parseSnapshot(snap));
+//                        }
+//                        onSuccessListener.onSuccess(classes);
+//                    }
+//                }).addOnFailureListener(onFailureListener);
+//            }
+//        }).addOnFailureListener(onFailureListener);
+//    }
 
     public void getClassCode(final String classId,
                              final OnSuccessListener<String> onSuccessListener,

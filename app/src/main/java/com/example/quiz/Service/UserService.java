@@ -2,9 +2,12 @@ package com.example.quiz.Service;
 
 import androidx.annotation.NonNull;
 
+import com.example.quiz.Model.Question;
 import com.example.quiz.Model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -16,6 +19,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserService {
@@ -102,6 +106,30 @@ public class UserService {
     }
 
     /**
+     * Gets a user role based on the provided user id and class id
+     * @param userId the id of the user
+     * @param classId the id of the class
+     * @param onSuccessListener the callback if successful. Returns the user role that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getUserRole(final String userId, final String classId,
+                            final OnSuccessListener<String> onSuccessListener,
+                            final OnFailureListener onFailureListener) {
+        db.collection("user_class").whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots)
+                {
+                    if(documentSnapshot.getString("classId").equals(classId))
+                    {
+                        onSuccessListener.onSuccess(documentSnapshot.getString("role"));
+                    }
+                }
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
+
+    /**
      * Gets a user based on the provided user id
      * @param userId the id of the user
      * @param onSuccessListener the callback if successful. Returns the user that was retrieved.
@@ -134,8 +162,8 @@ public class UserService {
      * @param onFailureListener the callback if there was a failure.
      */
     public void getUsers(final ArrayList<String> userIds,
-                    final OnSuccessListener<ArrayList<User>> onSuccessListener,
-                    final OnFailureListener onFailureListener) {
+                         final OnSuccessListener<ArrayList<User>> onSuccessListener,
+                         final OnFailureListener onFailureListener) {
         ArrayList<String> uIds = userIds;
 
         if(userIds!=null)
@@ -152,16 +180,64 @@ public class UserService {
                 uIds.add("null");
         }
 
-        db.collection("user").whereIn(FieldPath.documentId(), uIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        ArrayList<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        for(String s:userIds)
+        {
+            Task<QuerySnapshot> query = db.collection("user").whereEqualTo(FieldPath.documentId(), s).get();
+            tasks.add(query);
+        }
+        Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            public void onSuccess(List<Object> objects) {
                 ArrayList<User> users = new ArrayList<>();
-                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                for(Object doc:objects)
                 {
-                    users.add(SNAPSHOTPARSER_USER.parseSnapshot(docSnap));
+                    QuerySnapshot docSnap = (QuerySnapshot) doc;
+                    if(docSnap.getDocuments().size()!=0) {
+                        User user = SNAPSHOTPARSER_USER.parseSnapshot(docSnap.getDocuments().get(0));
+                        users.add(user);
+                    }
                 }
                 onSuccessListener.onSuccess(users);
             }
         }).addOnFailureListener(onFailureListener);
     }
+
+//    /**
+//     * Gets a list of users based on the provided user ids
+//     * @param userIds the list of ids of the users
+//     * @param onSuccessListener the callback if successful. Returns the list of users that was retrieved.
+//     * @param onFailureListener the callback if there was a failure.
+//     */
+//    public void getUsers(final ArrayList<String> userIds,
+//                    final OnSuccessListener<ArrayList<User>> onSuccessListener,
+//                    final OnFailureListener onFailureListener) {
+//        ArrayList<String> uIds = userIds;
+//
+//        if(userIds!=null)
+//        {
+//            for(String id:userIds)
+//            {
+//                if(id.equals(""))
+//                {
+//                    uIds = null;
+//                }
+//
+//            }
+//            if(uIds.size() == 0)
+//                uIds.add("null");
+//        }
+//
+//        db.collection("user").whereIn(FieldPath.documentId(), uIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                ArrayList<User> users = new ArrayList<>();
+//                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+//                {
+//                    users.add(SNAPSHOTPARSER_USER.parseSnapshot(docSnap));
+//                }
+//                onSuccessListener.onSuccess(users);
+//            }
+//        }).addOnFailureListener(onFailureListener);
+//    }
 }

@@ -143,7 +143,18 @@ public class ClassViewStudentActivity extends AppCompatActivity {
         File cacheFile = new File(getApplicationContext().getCacheDir(), "class_code.tmp");
         if(cacheFile.exists())
         {
-            setClasswork();
+            try{
+                FileInputStream fis = new FileInputStream(cacheFile);
+                InputStreamReader inputStreamReader = new InputStreamReader(fis);
+                BufferedReader reader = new BufferedReader(inputStreamReader);
+                String code = reader.readLine();
+                String id = code.split("~")[2];
+                if(classId.equals(id))
+                    setClasswork();
+            }
+            catch (Exception e) {
+                System.out.println(e);
+            }
         }
     }
     private void setClasswork() {
@@ -184,10 +195,10 @@ public class ClassViewStudentActivity extends AppCompatActivity {
                                         calendar = Calendar.getInstance();
                                         Date current = calendar.getTime();//SHOULD BE OBTAINED FROM FIREBASE WITH CLOUD FUNCTIONS
                                         long diff = current.getTime() - local.getTime();
-                                        long maxDiff = 3/*hours*/ * 3600 * 1000;System.out.println(diff);
+                                        long maxDiff = 3/*hours*/ * 3600 * 1000;
                                         if(diff<maxDiff)
                                         {
-                                            String decrypted = decryptString(e);System.out.println(decrypted);
+                                            String decrypted = decryptString(e);
                                             if(decrypted.equals(pass))
                                                 startQuiz();
                                             else {

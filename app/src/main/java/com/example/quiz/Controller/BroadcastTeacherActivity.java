@@ -118,7 +118,7 @@ public class BroadcastTeacherActivity extends AppCompatActivity {
                     ids.add(u.getId());
                     map.put(u.getId(), u);
                 }
-                String code = pass+"~"+Calendar.getInstance().getTimeInMillis();
+                String code = pass+"~"+Calendar.getInstance().getTimeInMillis()+"~"+classId;
                 setNearby(classId, code, ids, map);
                 nearby.restart();
             }

@@ -1,5 +1,6 @@
 package com.example.quiz.Controller;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuizSessionStudentListAdapter;
@@ -21,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +55,16 @@ public class StudentQuizSessionListActivity extends AppCompatActivity {
         TextView name = findViewById(R.id.studentNameInQuizSessionList);
         name.setText(userName+"'s Quiz Sessions:");
 
+        colorToolbar();
         getQuizSesions();
+    }
+
+    private void colorToolbar() {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(currentUserId.equals(studentId))
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.fui_bgPhone));
+        else
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xff33b5e5));
     }
 
     private void getQuizSesions() {

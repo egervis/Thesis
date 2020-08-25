@@ -14,7 +14,6 @@
             android:id="@+id/questionText1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/temp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp" />
 
@@ -22,7 +21,6 @@
             android:id="@+id/questionCategoy1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/temp"
             android:textAlignment="textEnd"
             android:textSize="18sp" />
     </LinearLayout>

@@ -169,4 +169,10 @@ public class TeacherClassListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getClassrooms();
+    }
 }

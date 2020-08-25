@@ -95,8 +95,9 @@ public class Quiz {
                     }
                 }
             }
-            if(multiselectCtr!=multiselectNum)
-                correct = false;
+            if(question.isMultiselect())
+                if(multiselectCtr!=multiselectNum)
+                    correct = false;
             if (correct)
                 received += question.getPointsWorth();
         }System.out.println(received + "/" + total);

@@ -201,4 +201,10 @@ public class ClassViewActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getClassroom();
+    }
 }

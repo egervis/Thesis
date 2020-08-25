@@ -1,5 +1,6 @@
 package com.example.quiz.Controller;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuestionListStudentChoiceAdapter;
@@ -7,6 +8,7 @@ import com.example.quiz.Model.Quiz;
 import com.example.quiz.Model.QuizSession;
 import com.example.quiz.Model.StudentChoice;
 import com.example.quiz.Service.QuizService;
+import com.example.quiz.Service.UserService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.quiz.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +60,16 @@ public class StudentChoiceViewActivity extends AppCompatActivity {
         startTime = (Date) getIntent().getExtras().get("startTime");
         endTime = (Date) getIntent().getExtras().get("endTime");
 
+        colorToolbar();
         makeRV();
+    }
+
+    private void colorToolbar() {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(currentUserId.equals(studentId))
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.fui_bgPhone));
+        else
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xff33b5e5));
     }
 
     private void makeRV() {

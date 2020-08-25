@@ -253,4 +253,10 @@ public class QuizListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getQuizzes();
+    }
 }

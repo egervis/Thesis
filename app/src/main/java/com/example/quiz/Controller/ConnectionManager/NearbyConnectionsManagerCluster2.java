@@ -23,6 +23,8 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,9 @@ import java.util.concurrent.Callable;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
+import static com.example.quiz.Controller.StringEncryption.StringEncryption.decryptString;
+import static com.example.quiz.Controller.StringEncryption.StringEncryption.encryptString;
 
 public class NearbyConnectionsManagerCluster2 {
     private PayloadCallback payloadCallback;
@@ -46,19 +51,19 @@ public class NearbyConnectionsManagerCluster2 {
     private HashMap<String, String> endpoints;
     private HashMap<String, User> map;
     private String password;
-    private Callable<Void> startQuiz;
+    private Callable<Void> callback;
     private String serviceId;
     private TextView teacherText;
 
     private final String SECRET_KEY = "ThisIsASecretKey";//Replace with a more secure key
 
     //student
-    public NearbyConnectionsManagerCluster2(Context context, String nickname, String serviceId, Callable<Void> startQuiz) {
+    public NearbyConnectionsManagerCluster2(Context context, String nickname, String serviceId, Callable<Void> callback) {
         this.isTeacher = false;
         this.connected = false;
         this.context = context;
         this.nickname = nickname;
-        this.startQuiz = startQuiz;
+        this.callback = callback;
         this.serviceId = serviceId;
         this.password = "";
         this.userIds = new ArrayList<>();
@@ -76,7 +81,7 @@ public class NearbyConnectionsManagerCluster2 {
         this.serviceId = serviceId;
         this.teacherText = teacherText;
         this.map = map;
-        startQuiz = null;
+        callback = null;
         initializeNearby();
     }
 
@@ -91,22 +96,6 @@ public class NearbyConnectionsManagerCluster2 {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-    }
-
-    private String encryptString(String n) throws Exception{
-        Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        String encryptedNickname = Base64.encodeToString(cipher.doFinal(n.getBytes()), Base64.DEFAULT);
-        return encryptedNickname;
-    }
-
-    private String decryptString(String n) throws Exception{
-        Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        String decryptedNickname = new String(cipher.doFinal(Base64.decode(n, Base64.DEFAULT)));
-        return decryptedNickname;
     }
 
     private void startAdvertising() {
@@ -327,13 +316,13 @@ public class NearbyConnectionsManagerCluster2 {
 
     private void checkPass(String pass) {
         try {
-            if(pass.equals("password")) {
-                startQuiz.call();
-            }
-            else
-            {
-                connected = false;
-            }
+            File cacheFile = new File(context.getCacheDir(), "class_code.tmp");
+            System.out.println(cacheFile.delete());
+            File.createTempFile("class_code", null, context.getCacheDir());
+            cacheFile = new File(context.getCacheDir(), "class_code.tmp");
+            FileOutputStream fos = new FileOutputStream(cacheFile);
+            fos.write(pass.getBytes());
+            callback.call();
         } catch (Exception e) {
             e.printStackTrace();
         }

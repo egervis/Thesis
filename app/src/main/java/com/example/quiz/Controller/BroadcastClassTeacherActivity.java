@@ -34,7 +34,7 @@ public class BroadcastClassTeacherActivity extends AppCompatActivity {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         classId = getIntent().getExtras().getString("classId");
 
-        getSupportActionBar().setTitle("Broadcast");
+        getSupportActionBar().setTitle("Add Students");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

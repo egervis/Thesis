@@ -12,7 +12,7 @@
         android:id="@+id/appBarLayout15"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_light"
+        android:background="@color/fui_bgPhone"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_light"
+            android:background="@color/fui_bgPhone"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -40,6 +40,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout15">
 
+        <Spinner
+            android:id="@+id/classListStudentSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <TextView
             android:id="@+id/noClassesStudent"
             android:layout_width="match_parent"
@@ -48,12 +54,6 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="24sp"
             tools:visibility="gone" />
-
-        <Spinner
-            android:id="@+id/classListStudentSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/classListStudentRV"

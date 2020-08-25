@@ -10,11 +10,14 @@ import com.example.quiz.Model.QuizSessionStudent;
 import com.example.quiz.Model.StudentChoice;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.firebase.ui.firestore.SnapshotParser;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -23,6 +26,7 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuizService {
@@ -266,8 +270,8 @@ public class QuizService {
      * @param onFailureListener the callback if there was a failure.
      */
     public void getQuiz(final String quizId,
-                            final OnSuccessListener<Quiz> onSuccessListener,
-                            final OnFailureListener onFailureListener) {
+                        final OnSuccessListener<Quiz> onSuccessListener,
+                        final OnFailureListener onFailureListener) {
 
         //TODO: blank checks
 
@@ -275,57 +279,131 @@ public class QuizService {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final Quiz quiz = SNAPSHOTPARSER_QUIZ.parseSnapshot(documentSnapshot);
-                db.collection("quiz_question").whereEqualTo("quizId", quiz.getId()).get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                db.collection("quiz_question").whereEqualTo("quizId", quiz.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<Task<QuerySnapshot>> questionTasks = new ArrayList<>();
+                        for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                        {
+                            Task<QuerySnapshot> questionQuery = db.collection("question").whereEqualTo(FieldPath.documentId(), docSnap.getString("questionId")).get();
+                            questionTasks.add(questionQuery);
+                        }
+                        Tasks.whenAllSuccess(questionTasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                             @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                final ArrayList<String> qIds = new ArrayList<>();
-                                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+                            public void onSuccess(List<Object> objects) {
+                                ArrayList<Task<QuerySnapshot>> choiceTasks = new ArrayList<>();
+                                final ArrayList<Question> questions = new ArrayList<>();
+                                for(Object doc:objects)
                                 {
-                                    qIds.add(docSnap.getString("questionId"));
+                                    QuerySnapshot docSnap = (QuerySnapshot) doc;
+                                    Question question = SNAPSHOTPARSER_QUESTION.parseSnapshot(docSnap.getDocuments().get(0));
+                                    Task<QuerySnapshot> choiceQuery = db.collection("choice").whereEqualTo("questionId", question.getId()).get();
+                                    choiceTasks.add(choiceQuery);
+                                    questions.add(question);
                                 }
-                                db.collection("question").whereIn(FieldPath.documentId(), qIds).get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                final ArrayList<Question> questions = new ArrayList<>();
-                                                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
-                                                {
-                                                    Question question = SNAPSHOTPARSER_QUESTION.parseSnapshot(docSnap);
-                                                    questions.add(question);
-                                                }
-                                                db.collection("choice").whereIn("questionId", qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                        ArrayList<Choice> choices = new ArrayList<>();
-                                                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
-                                                        {
-                                                            Choice choice = SNAPSHOTPARSER_CHOICE.parseSnapshot(snap);
-                                                            choices.add(choice);
-                                                        }
-                                                        for(Question q:questions)
-                                                        {
-                                                            ArrayList<Choice> qChoices = new ArrayList<>();
-                                                            for(Choice c:choices)
-                                                            {
-                                                                if(q.getId().equals(c.getQuestionId()))
-                                                                {
-                                                                    qChoices.add(c);
-                                                                }
-                                                            }
-                                                            q.setChoices(qChoices);
-                                                        }
-                                                        quiz.setQuestions(questions);
-                                                        onSuccessListener.onSuccess(quiz);
-                                                    }
-                                                }).addOnFailureListener(onFailureListener);
+                                Tasks.whenAllSuccess(choiceTasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                                    @Override
+                                    public void onSuccess(List<Object> objects) {
+                                        ArrayList<Choice> choices = new ArrayList<>();
+                                        for(Object doc:objects)
+                                        {
+                                            QuerySnapshot docSnap = (QuerySnapshot) doc;
+                                            for(DocumentSnapshot ref:docSnap.getDocuments()) {
+                                                Choice choice = SNAPSHOTPARSER_CHOICE.parseSnapshot(ref);
+                                                choices.add(choice);
                                             }
-                                        }).addOnFailureListener(onFailureListener);
+                                        }
+                                        for(Question q:questions)
+                                        {
+                                            ArrayList<Choice> qChoices = new ArrayList<>();
+                                            for(Choice c:choices)
+                                            {
+                                                if(q.getId().equals(c.getQuestionId()))
+                                                {
+                                                    qChoices.add(c);
+                                                }
+                                            }
+                                            q.setChoices(qChoices);
+                                        }
+                                        quiz.setQuestions(questions);
+                                        onSuccessListener.onSuccess(quiz);
+                                    }
+                                }).addOnFailureListener(onFailureListener);
                             }
                         }).addOnFailureListener(onFailureListener);
+                    }
+                }).addOnFailureListener(onFailureListener);
             }
         }).addOnFailureListener(onFailureListener);
     }
+
+//    /**
+//     * Gets a quiz WITH its questions (questions are set) based on the provided quiz id
+//     * @param quizId the id of the quiz
+//     * @param onSuccessListener the callback if successful. Returns the quiz that was retrieved.
+//     * @param onFailureListener the callback if there was a failure.
+//     */
+//    public void getQuiz(final String quizId,
+//                            final OnSuccessListener<Quiz> onSuccessListener,
+//                            final OnFailureListener onFailureListener) {
+//
+//        //TODO: blank checks
+//
+//        db.collection("quiz").document(quizId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                final Quiz quiz = SNAPSHOTPARSER_QUIZ.parseSnapshot(documentSnapshot);
+//                db.collection("quiz_question").whereEqualTo("quizId", quiz.getId()).get()
+//                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                final ArrayList<String> qIds = new ArrayList<>();
+//                                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+//                                {
+//                                    qIds.add(docSnap.getString("questionId"));
+//                                }
+//                                db.collection("question").whereIn(FieldPath.documentId(), qIds).get()
+//                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                            @Override
+//                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                                final ArrayList<Question> questions = new ArrayList<>();
+//                                                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+//                                                {
+//                                                    Question question = SNAPSHOTPARSER_QUESTION.parseSnapshot(docSnap);
+//                                                    questions.add(question);
+//                                                }
+//                                                db.collection("choice").whereIn("questionId", qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                                    @Override
+//                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                                        ArrayList<Choice> choices = new ArrayList<>();
+//                                                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+//                                                        {
+//                                                            Choice choice = SNAPSHOTPARSER_CHOICE.parseSnapshot(snap);
+//                                                            choices.add(choice);
+//                                                        }
+//                                                        for(Question q:questions)
+//                                                        {
+//                                                            ArrayList<Choice> qChoices = new ArrayList<>();
+//                                                            for(Choice c:choices)
+//                                                            {
+//                                                                if(q.getId().equals(c.getQuestionId()))
+//                                                                {
+//                                                                    qChoices.add(c);
+//                                                                }
+//                                                            }
+//                                                            q.setChoices(qChoices);
+//                                                        }
+//                                                        quiz.setQuestions(questions);
+//                                                        onSuccessListener.onSuccess(quiz);
+//                                                    }
+//                                                }).addOnFailureListener(onFailureListener);
+//                                            }
+//                                        }).addOnFailureListener(onFailureListener);
+//                            }
+//                        }).addOnFailureListener(onFailureListener);
+//            }
+//        }).addOnFailureListener(onFailureListener);
+//    }
 
     /**
      * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator
@@ -351,29 +429,29 @@ public class QuizService {
         }).addOnFailureListener(onFailureListener);
     }
 
-    /**
-     * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator
-     * @param quizIds the user id of the creator of the quizzes
-     * @param onSuccessListener the callback if successful. Returns the list of quizzes that was retrieved.
-     * @param onFailureListener the callback if there was a failure.
-     */
-    public void getQuizzes(final ArrayList<String> quizIds,
-                           final OnSuccessListener<ArrayList<Quiz>> onSuccessListener,
-                           final OnFailureListener onFailureListener) {
-        //TODO: blank checks
-
-        db.collection("quiz").whereIn(FieldPath.documentId(), quizIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                final ArrayList<Quiz> quizzes = new ArrayList<>();
-                for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
-                {
-                    quizzes.add(SNAPSHOTPARSER_QUIZ.parseSnapshot(snap));
-                }
-                onSuccessListener.onSuccess(quizzes);
-            }
-        }).addOnFailureListener(onFailureListener);
-    }
+//    /**
+//     * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator
+//     * @param quizIds the user id of the creator of the quizzes
+//     * @param onSuccessListener the callback if successful. Returns the list of quizzes that was retrieved.
+//     * @param onFailureListener the callback if there was a failure.
+//     */
+//    public void getQuizzes(final ArrayList<String> quizIds,
+//                           final OnSuccessListener<ArrayList<Quiz>> onSuccessListener,
+//                           final OnFailureListener onFailureListener) {
+//        //TODO: blank checks
+//
+//        db.collection("quiz").whereIn(FieldPath.documentId(), quizIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                final ArrayList<Quiz> quizzes = new ArrayList<>();
+//                for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+//                {
+//                    quizzes.add(SNAPSHOTPARSER_QUIZ.parseSnapshot(snap));
+//                }
+//                onSuccessListener.onSuccess(quizzes);
+//            }
+//        }).addOnFailureListener(onFailureListener);
+//    }
 
     /**
      * Gets a quiz name based on the provided quiz id
@@ -463,8 +541,8 @@ public class QuizService {
      * @param onFailureListener the callback if there was a failure.
      */
     public void getStudentQuizSessions(final String studentId, final String classId,
-                               final OnSuccessListener<ArrayList<QuizSessionStudent>> onSuccessListener,
-                               final OnFailureListener onFailureListener) {
+                                       final OnSuccessListener<ArrayList<QuizSessionStudent>> onSuccessListener,
+                                       final OnFailureListener onFailureListener) {
         //TODO: blank checks
 
         db.collection("quiz_session_student").whereEqualTo("studentId", studentId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -479,7 +557,7 @@ public class QuizService {
                 }
                 if(qIds.size()==0)
                     qIds.add("null");
-                db.collection("quiz_session").whereIn(FieldPath.documentId(), qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                db.collection("quiz_session").whereEqualTo("classId", classId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         ArrayList<QuizSession> quizSessions = new ArrayList<>();
@@ -488,20 +566,71 @@ public class QuizService {
                             QuizSession quizSession = SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(snap);
                             quizSessions.add(quizSession);
                         }
-                        ArrayList<String> studentClassSessions = new ArrayList<>();
-                        for(QuizSession q:quizSessions)
-                            if(q.getClassId().equals(classId))
-                                studentClassSessions.add(q.getId());
                         final ArrayList<QuizSessionStudent> returnLst = new ArrayList<>();
-                        for(QuizSessionStudent s:quizSessionStudent)
-                            if(studentClassSessions.contains(s.getQuizSessionId()))
-                                returnLst.add(s);
+                        for(QuizSession qs:quizSessions)
+                        {
+                            for(QuizSessionStudent session:quizSessionStudent)
+                            {
+                                if(session.getQuizSessionId().equals(qs.getId()))
+                                {
+                                    returnLst.add(session);
+                                }
+                            }
+                        }
                         onSuccessListener.onSuccess(returnLst);
                     }
                 }).addOnFailureListener(onFailureListener);
             }
         }).addOnFailureListener(onFailureListener);
     }
+
+//    /**
+//     * Gets a list of quiz sessions based on the provided user id and class id
+//     * @param studentId the id of the user
+//     * @param classId the id of the class
+//     * @param onSuccessListener the callback if successful. Returns the list of quiz sessions that was retrieved.
+//     * @param onFailureListener the callback if there was a failure.
+//     */
+//    public void getStudentQuizSessions(final String studentId, final String classId,
+//                               final OnSuccessListener<ArrayList<QuizSessionStudent>> onSuccessListener,
+//                               final OnFailureListener onFailureListener) {
+//        //TODO: blank checks
+//
+//        db.collection("quiz_session_student").whereEqualTo("studentId", studentId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                final ArrayList<String> qIds = new ArrayList<>();
+//                final ArrayList<QuizSessionStudent> quizSessionStudent = new ArrayList<>();
+//                for(QueryDocumentSnapshot docSnap:queryDocumentSnapshots)
+//                {
+//                    qIds.add(docSnap.getString("quizSessionId"));
+//                    quizSessionStudent.add(SNAPSHOTPARSER_QUIZ_SESSION_STUDENT.parseSnapshot(docSnap));
+//                }
+//                if(qIds.size()==0)
+//                    qIds.add("null");
+//                db.collection("quiz_session").whereIn(FieldPath.documentId(), qIds).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        ArrayList<QuizSession> quizSessions = new ArrayList<>();
+//                        for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+//                        {
+//                            QuizSession quizSession = SNAPSHOTPARSER_QUIZ_SESSION.parseSnapshot(snap);
+//                            quizSessions.add(quizSession);
+//                        }
+//                        ArrayList<String> studentClassSessions = new ArrayList<>();
+//                        for(QuizSession q:quizSessions)
+//                            if(q.getClassId().equals(classId))
+//                                studentClassSessions.add(q.getId());
+//                        final ArrayList<QuizSessionStudent> returnLst = new ArrayList<>();
+//                        for(QuizSessionStudent s:quizSessionStudent)
+//                            if(studentClassSessions.contains(s.getQuizSessionId()))
+//                                returnLst.add(s);
+//                        onSuccessListener.onSuccess(returnLst);
+//                    }
+//                }).addOnFailureListener(onFailureListener);
+//            }
+//        }).addOnFailureListener(onFailureListener);
+//    }
 
     /**
      * Gets a list of quiz sessions based on the provided class id

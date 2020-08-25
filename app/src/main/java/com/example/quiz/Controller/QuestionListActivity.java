@@ -242,4 +242,10 @@ public class QuestionListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getQuestions();
+    }
 }
