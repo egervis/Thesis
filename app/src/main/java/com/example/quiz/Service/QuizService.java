@@ -23,11 +23,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 public class QuizService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -404,6 +407,125 @@ public class QuizService {
 //            }
 //        }).addOnFailureListener(onFailureListener);
 //    }
+
+    /**
+     * Gets a list of quizzes WITH their questions (questions are null) based on the provided user id of the creator
+     * @param createdBy the user id of the creator of the quizzes
+     * @param onSuccessListener the callback if successful. Returns the list of quizzes that was retrieved.
+     * @param onFailureListener the callback if there was a failure.
+     */
+    public void getQuizzesComplete(final String createdBy,
+                           final OnSuccessListener<ArrayList<Quiz>> onSuccessListener,
+                           final OnFailureListener onFailureListener) {
+        db.collection("quiz").whereEqualTo("createdBy", createdBy).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                final Map<String, Quiz> quizMap = new HashMap<>();
+                ArrayList<Task<QuerySnapshot>> quizQuestionTasks = new ArrayList<>();
+                for(QueryDocumentSnapshot snap:queryDocumentSnapshots)
+                {
+                    Quiz quiz = SNAPSHOTPARSER_QUIZ.parseSnapshot(snap);
+                    quizMap.put(quiz.getId(), quiz);
+                    Task<QuerySnapshot> quizQuestionTask = db.collection("quiz_question").whereEqualTo("quizId", quiz.getId()).get();
+                    quizQuestionTasks.add(quizQuestionTask);
+                }
+                Tasks.whenAllSuccess(quizQuestionTasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> objects) {
+                        final Map<String, ArrayList<String>> quizQuestionMap = new HashMap<>();
+                        ArrayList<Task<QuerySnapshot>> questionTasks = new ArrayList<>();
+                        for(Object doc:objects) {
+                            QuerySnapshot docSnap = (QuerySnapshot) doc;
+                            for(DocumentSnapshot ref:docSnap.getDocuments())
+                            {
+                                String questionId = ref.getString("questionId");
+                                String quizId = ref.getString("quizId");
+                                if(quizQuestionMap.containsKey(questionId))
+                                {
+                                    ArrayList<String> a = quizQuestionMap.get(questionId);
+                                    a.add(quizId);
+                                    quizQuestionMap.remove(questionId);
+                                    quizQuestionMap.put(questionId, a);
+                                }
+                                else
+                                {
+                                    ArrayList<String> a = new ArrayList<>();
+                                    a.add(quizId);
+                                    quizQuestionMap.put(questionId, a);
+                                    Task<QuerySnapshot> questionQuery = db.collection("question").whereEqualTo(FieldPath.documentId(), questionId).get();
+                                    questionTasks.add(questionQuery);
+                                }
+                            }
+                        }
+                        Tasks.whenAllSuccess(questionTasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                            @Override
+                            public void onSuccess(List<Object> objects) {
+                                ArrayList<Task<QuerySnapshot>> choiceTasks = new ArrayList<>();
+                                final ArrayList<Question> questions = new ArrayList<>();
+                                for(Object doc:objects)
+                                {
+                                    QuerySnapshot docSnap = (QuerySnapshot) doc;
+                                    Question question = SNAPSHOTPARSER_QUESTION.parseSnapshot(docSnap.getDocuments().get(0));
+                                    Task<QuerySnapshot> choiceQuery = db.collection("choice").whereEqualTo("questionId", question.getId()).get();
+                                    choiceTasks.add(choiceQuery);
+                                    questions.add(question);
+                                }
+                                Tasks.whenAllSuccess(choiceTasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                                    @Override
+                                    public void onSuccess(List<Object> objects) {
+                                        ArrayList<Choice> choices = new ArrayList<>();
+                                        for(Object doc:objects)
+                                        {
+                                            QuerySnapshot docSnap = (QuerySnapshot) doc;
+                                            for(DocumentSnapshot ref:docSnap.getDocuments()) {
+                                                Choice choice = SNAPSHOTPARSER_CHOICE.parseSnapshot(ref);
+                                                choices.add(choice);
+                                            }
+                                        }
+                                        for(Question q:questions)
+                                        {
+                                            ArrayList<Choice> qChoices = new ArrayList<>();
+                                            for(Choice c:choices)
+                                            {
+                                                if(q.getId().equals(c.getQuestionId()))
+                                                {
+                                                    qChoices.add(c);
+                                                }
+                                            }
+                                            q.setChoices(qChoices);
+                                            ArrayList<String> quizIds = quizQuestionMap.get(q.getId());
+                                            for (String s:quizIds)
+                                            {
+                                                Quiz quiz = quizMap.get(s);
+                                                if(quiz.getQuestions() == null)
+                                                {
+                                                    ArrayList<Question> lst = new ArrayList<>();
+                                                    lst.add(q);
+                                                    quiz.setQuestions(lst);
+                                                }
+                                                else
+                                                {
+                                                    ArrayList<Question> lst = quiz.getQuestions();
+                                                    lst.add(q);
+                                                    quiz.setQuestions(lst);
+                                                }
+                                            }
+                                        }
+                                        ArrayList<Quiz> quizzes = new ArrayList<>();
+                                        for(Quiz quiz: quizMap.values())
+                                        {
+                                            quizzes.add(quiz);
+                                        }
+                                        onSuccessListener.onSuccess(quizzes);
+                                    }
+                                }).addOnFailureListener(onFailureListener);
+                            }
+                        }).addOnFailureListener(onFailureListener);
+                    }
+                }).addOnFailureListener(onFailureListener);
+            }
+        }).addOnFailureListener(onFailureListener);
+    }
 
     /**
      * Gets a list of quizzes WITHOUT their questions (questions are null) based on the provided user id of the creator

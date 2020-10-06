@@ -74,4 +74,5 @@
     <string name="logout">Logout</string>
     <string name="title_activity_broadcast_class_teacher">BroadcastClassTeacherActivity</string>
     <string name="add_students">Add Students</string>
+    <string name="export_quizzes">Export Quizzes</string>
 </resources>

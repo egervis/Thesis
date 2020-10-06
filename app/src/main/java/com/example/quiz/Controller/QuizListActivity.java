@@ -1,6 +1,9 @@
 package com.example.quiz.Controller;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.quiz.Controller.RecyclerViewAdapter.QuizListAdapter;
@@ -23,10 +26,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.quiz.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -252,6 +257,45 @@ public class QuizListActivity extends AppCompatActivity {
                 search(searchText.getText().toString());
             }
         });
+
+        Button export = findViewById(R.id.exportQuizzes);
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askStoragePermissions();
+                QuizService quizService = new QuizService();
+                quizService.getQuizzesComplete(userId, new OnSuccessListener<ArrayList<Quiz>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Quiz> quizzes) {
+                        if(quizzes.size()!=0)
+                        {
+                            try {
+                                quizzes.get(0).createCSV(quizzes);
+                                Toast toast = Toast.makeText(getApplicationContext(), "Exported Successfully", Toast.LENGTH_SHORT);
+                                toast.show();
+                            } catch (IOException e) {
+                                System.out.println("Failed to create csv "+ e);
+                            }
+                        }
+                    }
+                }, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Failed to get quizzes "+ e);
+                    }
+                });
+            }
+        });
+    }
+
+    private void askStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            //    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
     }
 
     @Override

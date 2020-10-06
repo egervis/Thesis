@@ -105,6 +105,17 @@
             android:drawableLeft="@drawable/ic_add_box_black_24dp"
             android:text="@string/create_quiz" />
 
+        <Button
+            android:id="@+id/exportQuizzes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:drawableLeft="@drawable/ic_file_download_black_24dp"
+            android:text="@string/export_quizzes"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </LinearLayout>
 
     <LinearLayout
